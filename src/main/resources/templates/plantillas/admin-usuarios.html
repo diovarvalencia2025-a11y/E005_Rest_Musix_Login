@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" th:href="@{/styles/styles.css}">
+    <link rel="stylesheet" th:href="@{/styles/responsive-musix.css}">
 
     <style>
         * {
@@ -758,29 +759,26 @@
             cursor: pointer;
         }
 
-        @media (max-width: 1100px) {
-            .kpi-grid { grid-template-columns: repeat(2, 1fr); }
-        }
-
-        @media (max-width: 900px) {
-            .sidebar { display: none; }
-            .main { margin-left: 0; }
-            .contenido { padding: 16px; }
-            .kpi-grid { grid-template-columns: 1fr; }
-            .toolbar-filtros-card { flex-direction: column; align-items: stretch; }
-        }
     </style>
 </head>
 <body>
 
 <div class="app-contenedor">
 
+    <!-- OVERLAY PARA MENÚ EN MÓVIL Y TABLET -->
+    <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
     <!-- ─────────── 1. SIDEBAR DE NAVEGACIÓN ─────────── -->
     <aside class="sidebar">
         <div>
             <div class="sidebar-logo">
-                <div class="logo-icono"><i class="fa-solid fa-play"></i></div>
-                <div class="logo-texto">MUSIX</div>
+                <div class="sidebar-logo-brand">
+                    <div class="logo-icono"><i class="fa-solid fa-play"></i></div>
+                    <div class="logo-texto">MUSIX</div>
+                </div>
+                <button type="button" class="btn-cerrar-sidebar" onclick="toggleSidebar()" aria-label="Cerrar menú">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
             </div>
 
             <nav class="sidebar-menu">
@@ -825,6 +823,23 @@
 
     <!-- ─────────── 2. ÁREA PRINCIPAL ─────────── -->
     <div class="main">
+
+        <!-- BARRA SUPERIOR MÓVIL DEDICADA (Visible solo en <= 992px) -->
+        <header class="topbar-mobile-only">
+            <div class="topbar-marca-mobile">
+                <button type="button" class="btn-menu-toggle" onclick="toggleSidebar()" aria-label="Abrir menú">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <div class="logo-icono-mob"><i class="fa-solid fa-play"></i></div>
+                <div class="logo-texto-mob">MUSIX Admin</div>
+            </div>
+            <div class="topbar-user-badge-mob">
+                <img th:src="@{'/imagenes/' + ${usuario != null and usuario.foto != null ? usuario.foto : 'Fondologin.png'}}"
+                     alt="Admin"
+                     class="avatar-mob"
+                     onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=Admin&amp;background=2563eb&amp;color=fff';">
+            </div>
+        </header>
 
         <div class="contenido">
 
@@ -931,7 +946,11 @@
 
             <!-- ─────────── 5. TABLA DE USUARIOS ─────────── -->
             <div class="tabla-contenedor-card">
-                <table class="tabla-admin-usuarios">
+                <div class="tabla-hint-movil">
+                    <i class="fa-solid fa-arrows-left-right"></i> Desliza horizontalmente para ver todos los datos y acciones
+                </div>
+                <div class="tabla-scroll-responsive">
+                    <table class="tabla-admin-usuarios">
                     <thead>
                         <tr>
                             <th>Usuario</th>
@@ -1031,6 +1050,7 @@
                         </tr>
                     </tbody>
                 </table>
+                </div>
             </div>
 
             <!-- ─────────── 6. PAGINACIÓN ─────────── -->
@@ -1112,5 +1132,6 @@
     }
 </script>
 
+<script th:src="@{/js/responsive-musix.js}"></script>
 </body>
 </html>

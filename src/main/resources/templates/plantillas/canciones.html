@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="/styles/styles.css" th:href="@{/styles/styles.css}">
+    <link rel="stylesheet" th:href="@{/styles/responsive-musix.css}">
 
     <style>
         /* =========================================================
@@ -789,26 +790,26 @@
             grid-column: 1 / -1;
         }
 
-        @media (max-width: 992px) {
-            .kpi-grid { grid-template-columns: repeat(2, 1fr); }
-            .sidebar { display: none; }
-            .main { margin-left: 0; }
-            .contenido { padding: 20px 16px; }
-            .topbar-musix { padding: 0 16px; }
-            .buscador-caja-form { width: 220px; }
-        }
     </style>
 </head>
 <body>
 
 <div class="app-contenedor">
 
+    <!-- OVERLAY PARA MENÚ EN MÓVIL Y TABLET -->
+    <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
     <!-- ─────────── 1. SIDEBAR DE NAVEGACIÓN ─────────── -->
     <aside class="sidebar">
         <div>
             <div class="sidebar-logo">
-                <div class="logo-icono"><i class="fa-solid fa-play"></i></div>
-                <div class="logo-texto">MUSIX</div>
+                <div class="sidebar-logo-brand">
+                    <div class="logo-icono"><i class="fa-solid fa-play"></i></div>
+                    <div class="logo-texto">MUSIX</div>
+                </div>
+                <button type="button" class="btn-cerrar-sidebar" onclick="toggleSidebar()" aria-label="Cerrar menú">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
             </div>
 
             <nav class="sidebar-menu">
@@ -858,8 +859,11 @@
     <!-- ─────────── 2. ÁREA PRINCIPAL ─────────── -->
     <div class="main">
 
-        <!-- TOPBAR CON BUSCADOR DINÁMICO -->
+        <!-- TOPBAR CON BUSCADOR DINÁMICO Y BOTÓN HAMBURGUESA -->
         <header class="topbar-musix">
+            <button type="button" class="btn-menu-toggle" onclick="toggleSidebar()" aria-label="Abrir menú">
+                <i class="fa-solid fa-bars"></i>
+            </button>
             <form th:action="@{/canciones}" method="get" class="buscador-caja-form">
                 <input type="hidden" name="estilo" th:if="${fEstilo != null}" th:value="${fEstilo}">
                 <input type="text" name="texto" th:value="${fTexto}" placeholder="Buscar canciones, artistas, estilos...">
@@ -1264,5 +1268,6 @@
     </div>
 </div>
 
+<script th:src="@{/js/responsive-musix.js}"></script>
 </body>
 </html>

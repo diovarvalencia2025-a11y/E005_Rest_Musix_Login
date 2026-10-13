@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="/styles/styles.css" th:href="@{/styles/styles.css}">
+    <link rel="stylesheet" th:href="@{/styles/responsive-musix.css}">
 
     <style>
         * {
@@ -479,12 +480,20 @@
 
 <div class="app-contenedor">
 
+    <!-- OVERLAY PARA MENÚ EN MÓVIL Y TABLET -->
+    <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
     <!-- 1. SIDEBAR -->
     <aside class="sidebar">
         <div>
             <div class="sidebar-logo">
-                <div class="logo-icono"><i class="fa-solid fa-play"></i></div>
-                <div class="logo-texto">MUSIX</div>
+                <div class="sidebar-logo-brand">
+                    <div class="logo-icono"><i class="fa-solid fa-play"></i></div>
+                    <div class="logo-texto">MUSIX</div>
+                </div>
+                <button type="button" class="btn-cerrar-sidebar" onclick="toggleSidebar()" aria-label="Cerrar menú">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
             </div>
 
             <nav class="sidebar-menu">
@@ -541,6 +550,9 @@
     <div class="main">
 
         <header class="topbar-musix">
+            <button type="button" class="btn-menu-toggle" onclick="toggleSidebar()" aria-label="Abrir menú">
+                <i class="fa-solid fa-bars"></i>
+            </button>
             <div class="topbar-der">
                 <button class="btn-campana-top" title="Notificaciones"><i class="fa-regular fa-bell"></i></button>
                 <img th:if="${usuario != null and usuario.foto != null and !usuario.foto.isEmpty()}"
@@ -766,5 +778,6 @@
     });
 </script>
 
+<script th:src="@{/js/responsive-musix.js}"></script>
 </body>
 </html>

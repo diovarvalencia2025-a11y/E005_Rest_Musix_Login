@@ -96,9 +96,45 @@
             margin-bottom: 0 !important;
         }
 
-        /* Formulario con z-index para permitir que el audífono flote encima */
-        .registro-contenedor-card {
-            grid-template-columns: 260px 1fr 310px !important;
+        @media (min-width: 981px) {
+            .registro-contenedor-card {
+                grid-template-columns: 260px 1fr 310px !important;
+            }
+        }
+
+        @media (max-width: 980px) {
+            .registro-contenedor-card {
+                grid-template-columns: 220px 1fr !important;
+                height: 94vh !important;
+                max-height: 900px !important;
+            }
+            .registro-panel-derecho-audifonos {
+                display: none !important;
+            }
+        }
+
+        @media (max-width: 720px) {
+            .registro-contenedor-card {
+                grid-template-columns: 1fr !important;
+                height: auto !important;
+                min-height: auto !important;
+                max-height: none !important;
+                border-radius: 16px !important;
+                overflow: visible !important;
+            }
+            .registro-panel-izquierdo {
+                display: none !important;
+            }
+            .registro-panel-derecho-audifonos {
+                display: none !important;
+            }
+            .registro-panel-formulario {
+                padding: 24px 16px !important;
+                overflow: visible !important;
+            }
+            .grid-campos-doble, .fila-pregunta-grid {
+                grid-template-columns: 1fr !important;
+            }
         }
 
         /* Formulario con z-index para permitir que el audífono flote encima */

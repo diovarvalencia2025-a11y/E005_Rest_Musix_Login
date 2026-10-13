@@ -1,0 +1,488 @@
+/* =========================================================
+   MUSIX - SISTEMA RESPONSIVO INTEGRAL (DESKTOP, TABLET Y MÓVIL)
+   Solución completa para menú lateral (drawer en móvil), tablas scrolleables
+   y proporciones de tarjetas en teléfonos y escritorios.
+   ========================================================= */
+
+/* 1. RESET Y PREVENCIÓN DE DESBORDAMIENTO EN TODA LA PANTALLA */
+html, body {
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+body.sidebar-abierto {
+    overflow: hidden !important;
+}
+
+.app-contenedor {
+    display: flex;
+    min-height: 100vh;
+    width: 100%;
+    max-width: 100vw;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* 2. SIDEBAR - ESCRITORIO (FIJO A LA IZQUIERDA) */
+.sidebar {
+    width: 240px;
+    background: #ffffff;
+    border-right: 1px solid #e2e8f0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 24px 16px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 1000;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Encabezado del logo con soporte para botón cerrar */
+.sidebar-logo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 4px 10px;
+    margin-bottom: 24px;
+}
+
+.sidebar-logo-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Botón cerrar sidebar (solo móvil) */
+.btn-cerrar-sidebar {
+    display: none;
+    background: #f1f5f9;
+    border: none;
+    color: #64748b;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.btn-cerrar-sidebar:hover {
+    background: #e2e8f0;
+    color: #0f172a;
+}
+
+/* Telón de fondo (overlay) en móvil */
+.sidebar-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.55);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 1050;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.sidebar-overlay.activo {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* 3. MAIN (ÁREA DE CONTENIDO) - ESCRITORIO */
+.main {
+    flex: 1;
+    margin-left: 240px;
+    width: calc(100% - 240px);
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: #f1f5f9;
+    overflow-x: hidden;
+}
+
+/* Botón hamburguesa para abrir menú */
+.btn-menu-toggle {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    color: #0f172a;
+    font-size: 17px;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
+    transition: all 0.2s;
+    flex-shrink: 0;
+}
+
+.btn-menu-toggle:hover {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+    color: #2563eb;
+}
+
+/* Barra superior móvil dedicada para pantallas sin topbar */
+.topbar-mobile-only {
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 18px;
+    background: #ffffff;
+    border-bottom: 1px solid #e2e8f0;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    width: 100%;
+}
+
+.topbar-mobile-only .topbar-marca-mobile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.topbar-mobile-only .logo-icono-mob {
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    color: #fff;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.topbar-mobile-only .logo-texto-mob {
+    font-size: 18px;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: 0.5px;
+}
+
+.topbar-mobile-only .topbar-user-badge-mob {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.topbar-mobile-only .avatar-mob {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1.5px solid #e2e8f0;
+}
+
+/* 4. CONTENEDOR DE TABLA CON SCROLL HORIZONTAL */
+.tabla-contenedor-card {
+    overflow: hidden;
+}
+
+.tabla-scroll-responsive {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.tabla-scroll-responsive::-webkit-scrollbar {
+    height: 6px;
+}
+
+.tabla-scroll-responsive::-webkit-scrollbar-track {
+    background: #f8fafc;
+}
+
+.tabla-scroll-responsive::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+
+.tabla-scroll-responsive::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+.tabla-hint-movil {
+    display: none;
+    font-size: 11px;
+    color: #64748b;
+    padding: 6px 16px;
+    background: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+    align-items: center;
+    gap: 6px;
+}
+
+/* =========================================================
+   MEDIA QUERY: TABLET Y PANTALLAS MENORES (<= 992px)
+   ========================================================= */
+@media (max-width: 992px) {
+    /* El sidebar se convierte en drawer deslizable hacia la izquierda */
+    .sidebar {
+        transform: translateX(-100%) !important;
+        display: flex !important;
+        box-shadow: none !important;
+        z-index: 1100 !important;
+        width: 280px !important;
+        max-width: 85vw !important;
+    }
+
+    .sidebar.abierto {
+        transform: translateX(0) !important;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3) !important;
+    }
+
+    .btn-cerrar-sidebar {
+        display: flex !important;
+    }
+
+    /* El contenido principal ocupa el 100% de la pantalla */
+    .main {
+        margin-left: 0 !important;
+        width: 100% !important;
+    }
+
+    /* Botón hamburguesa visible */
+    .btn-menu-toggle {
+        display: inline-flex !important;
+    }
+
+    /* Barra superior móvil */
+    .topbar-mobile-only {
+        display: flex !important;
+    }
+
+    .contenido {
+        padding: 20px 16px !important;
+    }
+
+    /* KPIs: 2 columnas compactas en vez de 1 enorme o salirse */
+    .kpi-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 12px !important;
+    }
+
+    .kpi-card {
+        padding: 16px !important;
+    }
+
+    .kpi-numero {
+        font-size: 24px !important;
+    }
+
+    /* Topbar en canciones y perfil */
+    .topbar-musix {
+        padding: 10px 16px !important;
+        height: auto !important;
+        min-height: 60px !important;
+        gap: 12px !important;
+    }
+
+    .buscador-caja-form {
+        width: auto !important;
+        flex: 1 !important;
+        min-width: 140px !important;
+        max-width: 480px !important;
+    }
+
+    /* Tablas con swipe horizontal fluido */
+    .tabla-admin-canciones,
+    .tabla-admin-usuarios,
+    .tabla-mis-canciones {
+        min-width: 780px !important;
+    }
+
+    .tabla-hint-movil {
+        display: flex !important;
+    }
+
+    /* Toolbars de filtros en tablas de admin */
+    .toolbar-filtros-card {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 12px !important;
+        padding: 14px 16px !important;
+    }
+
+    .buscador-wrap {
+        width: 100% !important;
+    }
+
+    .filtros-derecha-wrap {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        gap: 10px !important;
+        width: 100% !important;
+    }
+
+    .select-filtro-custom {
+        flex: 1 1 calc(50% - 6px) !important;
+        min-width: 140px !important;
+    }
+
+    .select-filtro-custom select {
+        width: 100% !important;
+    }
+
+    /* Perfil columnas */
+    .perfil-columnas-card {
+        grid-template-columns: 1fr !important;
+        gap: 20px !important;
+    }
+
+    /* Formulario nueva canción */
+    .contenedor-form-cancion {
+        padding: 20px 16px !important;
+    }
+
+    .grid-campos-cancion {
+        grid-template-columns: 1fr !important;
+        gap: 14px !important;
+    }
+}
+
+/* =========================================================
+   MEDIA QUERY: CELULARES (<= 640px)
+   ========================================================= */
+@media (max-width: 640px) {
+    .contenido {
+        padding: 16px 12px !important;
+    }
+
+    .topbar-musix {
+        padding: 10px 12px !important;
+    }
+
+    /* Header de sección */
+    .header-seccion-admin {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 12px !important;
+    }
+
+    .header-seccion-admin h1 {
+        font-size: 20px !important;
+    }
+
+    .header-icono-circulo {
+        width: 38px !important;
+        height: 38px !important;
+        font-size: 16px !important;
+    }
+
+    /* KPIs en celulares: tamaño armónico sin agrandarse excesivamente */
+    .kpi-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 8px !important;
+        margin-bottom: 18px !important;
+    }
+
+    .kpi-card {
+        padding: 12px 12px !important;
+        border-radius: 12px !important;
+    }
+
+    .kpi-card-header {
+        margin-bottom: 8px !important;
+    }
+
+    .kpi-card-header .kpi-label {
+        font-size: 11px !important;
+    }
+
+    .kpi-icono {
+        width: 28px !important;
+        height: 28px !important;
+        font-size: 12px !important;
+    }
+
+    .kpi-numero {
+        font-size: 20px !important;
+        margin-bottom: 4px !important;
+    }
+
+    .kpi-trend {
+        font-size: 10px !important;
+    }
+
+    /* Filtros dropdowns en una columna si la pantalla es muy estrecha */
+    .select-filtro-custom {
+        flex: 1 1 100% !important;
+    }
+
+    /* Grid de canciones */
+    .grid-canciones-musix {
+        grid-template-columns: 1fr !important;
+        gap: 14px !important;
+    }
+
+    .contenido-header-canciones {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 10px !important;
+    }
+
+    .btn-toggle-filtros {
+        width: 100% !important;
+        justify-content: center !important;
+    }
+
+    .panel-filtros-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .cancion-botones-card {
+        flex-direction: column !important;
+    }
+
+    /* Footer de paginación */
+    .tabla-paginacion-footer {
+        flex-direction: column !important;
+        gap: 12px !important;
+        align-items: center !important;
+        text-align: center !important;
+    }
+
+    /* Perfil */
+    .tarjeta-formulario-perfil,
+    .tarjeta-foto-perfil {
+        padding: 18px 14px !important;
+    }
+
+    .grid-campos-2 {
+        grid-template-columns: 1fr !important;
+        gap: 12px !important;
+    }
+
+    .btn-guardar-perfil {
+        width: 100% !important;
+    }
+
+    /* Formulario nueva canción */
+    .acciones-form-cancion {
+        flex-direction: column-reverse !important;
+        gap: 10px !important;
+    }
+
+    .btn-guardar-cancion,
+    .btn-cancelar-cancion {
+        width: 100% !important;
+        justify-content: center !important;
+    }
+}
