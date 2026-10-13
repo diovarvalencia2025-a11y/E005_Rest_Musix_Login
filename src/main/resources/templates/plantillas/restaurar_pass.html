@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nueva contraseña - MUSIX</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/styles/loginStyles.css}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; }
+        body { min-height: 100vh; background: #e6f1fb; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .card-box { width: 100%; max-width: 480px; background: #ffffff; border-radius: 20px; padding: 40px; box-shadow: 0 20px 40px rgba(15, 23, 42, 0.1); border: 1px solid #e2e8f0; }
+        .marca { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+        .logo-icono { width: 36px; height: 36px; background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: #fff; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 18px; }
+        .logo-txt { font-size: 22px; font-weight: 800; color: #0f172a; }
+        h2 { font-size: 24px; font-weight: 800; color: #0f172a; margin-bottom: 6px; }
+        p.sub { font-size: 13.5px; color: #64748b; margin-bottom: 24px; }
+        .campo { margin-bottom: 16px; }
+        .campo label { display: block; font-size: 13px; font-weight: 700; color: #334155; margin-bottom: 6px; }
+        .campo input { width: 100%; padding: 12px 14px; border: 1.5px solid #cbd5e1; border-radius: 10px; font-size: 14px; outline: none; }
+        .campo input:focus { border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.12); }
+        .btn-row { display: flex; gap: 12px; margin-top: 24px; }
+        .btn-primario { flex: 1; padding: 12px; background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); color: #fff; font-size: 14px; font-weight: 700; border: none; border-radius: 10px; cursor: pointer; }
+        .btn-secundario { padding: 12px 20px; background: #f1f5f9; color: #475569; font-size: 14px; font-weight: 700; border: none; border-radius: 10px; cursor: pointer; text-decoration: none; text-align: center; }
+        .msg-error { background: #fef2f2; border: 1px solid #fecaca; color: #b91c1c; padding: 10px 14px; border-radius: 8px; font-size: 13px; font-weight: 600; margin-bottom: 18px; }
+    </style>
+</head>
+<body>
+
+<div class="card-box">
+    <div class="marca">
+        <span class="logo-icono">♪</span>
+        <span class="logo-txt">MUSIX</span>
+    </div>
+
+    <h2>Restaurar contraseña</h2>
+    <p class="sub">Escribe tu nueva contraseña para acceder a tu cuenta.</p>
+
+    <article th:if="${f_mensaje}" id="cajaMensajes" class="msg-error">
+        <h2 th:text="${f_mensaje}" style="font-size: 14px; font-weight: 700; margin: 0;"></h2>
+    </article>
+
+    <form method="post" th:action="@{/RestaurarPass}" onsubmit="hashearAntesDeEnviar()">
+        <div class="campo">
+            <label for="pass_sin_hash">Nueva contraseña</label>
+            <input type="password" id="pass_sin_hash" placeholder="Mínimo 8 caracteres" required minlength="8" oninput="calcularSha256()">
+            <input type="hidden" id="pass" name="pass">
+        </div>
+
+        <div class="btn-row">
+            <button type="submit" class="btn-secundario" th:formaction="@{/CancelarRestaurarPass}" formnovalidate>Cancelar</button>
+            <button type="submit" class="btn-primario" th:formaction="@{/RestaurarPass}">Restaurar</button>
+        </div>
+    </form>
+</div>
+
+<script>
+function calcularSha256() {
+    const texto = document.getElementById('pass_sin_hash').value;
+    if (texto === '') {
+        document.getElementById('pass').value = '';
+        return;
+    }
+    const hash = CryptoJS.SHA256(texto + 'Galea');
+    document.getElementById('pass').value = hash.toString(CryptoJS.enc.Hex);
+}
+
+function hashearAntesDeEnviar() {
+    calcularSha256();
+}
+</script>
+
+</body>
+</html>

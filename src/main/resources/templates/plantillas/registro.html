@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear cuenta - MUSIX</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/styles/loginStyles.css}">
+
+    <!-- =========================================================
+         AUDÍFONO FLOTANTE + TEXTO EN EL CÍRCULO
+         ========================================================= -->
+    <style>
+        /* Contenedor principal del registro */
+        .registro-contenedor-card {
+            width: 100%;
+            max-width: 1160px;
+            height: 92vh;
+            min-height: 640px;
+            max-height: 860px;
+            background: #ffffff;
+            border-radius: 24px;
+            display: grid;
+            grid-template-columns: 240px 1fr 300px;
+            overflow: hidden !important;
+            box-shadow: 0 25px 60px -12px rgba(15, 23, 42, 0.18);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+
+        /* Panel lateral izquierdo */
+        .registro-panel-izquierdo {
+            position: relative;
+            z-index: 1;
+            background: #ffffff;
+        }
+
+        /* Panel central del formulario: scroll limpio */
+        .registro-panel-formulario {
+            position: relative;
+            z-index: 1;
+            background: #ffffff;
+            padding: 28px 36px 36px 36px !important;
+            overflow-y: auto !important;
+            scroll-behavior: smooth;
+        }
+
+        /* Desactivar sticky en botones para que NO tapen la sección 3 */
+        .acciones-formulario-row {
+            position: static !important;
+            box-shadow: none !important;
+            background: transparent !important;
+            margin-top: 20px !important;
+            padding-top: 16px !important;
+            bottom: auto !important;
+        }
+
+        /* Caja de foto compacta y horizontal */
+        .foto-drop-box {
+            padding: 14px 18px !important;
+            background: #f8fafc;
+            border: 2px dashed #cbd5e1;
+            border-radius: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .foto-drop-box:hover {
+            border-color: #2563eb;
+            background: #eff6ff;
+        }
+
+        .foto-drop-label {
+            cursor: pointer;
+            display: flex !important;
+            flex-direction: row !important;
+            align-items: center !important;
+            justify-content: flex-start !important;
+            gap: 16px !important;
+            text-align: left !important;
+        }
+
+        .avatar-vista-previa {
+            width: 56px !important;
+            height: 56px !important;
+            border-radius: 50% !important;
+            background: #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: #64748b;
+            overflow: hidden;
+            flex-shrink: 0 !important;
+            margin-bottom: 0 !important;
+        }
+
+        /* Formulario con z-index para permitir que el audífono flote encima */
+        .registro-contenedor-card {
+            grid-template-columns: 260px 1fr 310px !important;
+        }
+
+        /* Formulario con z-index para permitir que el audífono flote encima */
+        .registro-panel-formulario {
+            position: relative !important;
+            z-index: 1 !important;
+        }
+
+        /* Panel derecho oscuro con overflow visible para permitir que el audífono sobresalga a la izquierda */
+        .registro-panel-derecho-audifonos {
+            position: relative !important;
+            background: linear-gradient(145deg, #091326 0%, #0f172a 50%, #1e293b 100%) !important;
+            overflow: visible !important;
+            border-top-right-radius: 24px;
+            border-bottom-right-radius: 24px;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            padding: 0 !important;
+            z-index: 15 !important;
+        }
+
+        /* Contenedor del audífono centrado y flotante */
+        .audifono-stage {
+            position: relative !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            /* Desplazamos hacia la izquierda para que la almohadilla sobresalga sobre el panel blanco */
+            margin-left: -55px !important;
+            z-index: 2;
+        }
+
+        /* Halo azul ambiental centrado exactamente en el hueco del audífono */
+        .audifono-stage::before {
+            content: '';
+            position: absolute;
+            width: 250px;
+            height: 250px;
+            background: radial-gradient(circle, rgba(37, 99, 235, 0.45) 0%, rgba(37, 99, 235, 0) 70%);
+            top: 43%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Audífono agrandado con sombra que cae sobre el formulario blanco */
+        .audifono-flotante {
+            position: relative !important;
+            display: block !important;
+            height: 480px !important;
+            max-height: 80vh !important;
+            width: auto !important;
+            object-fit: contain !important;
+            filter: drop-shadow(-12px 18px 25px rgba(0, 0, 0, 0.45)) drop-shadow(0 0 30px rgba(37, 99, 235, 0.25)) !important;
+            z-index: 2 !important;
+            pointer-events: none;
+            transition: transform 0.4s ease;
+        }
+
+        .audifono-stage:hover .audifono-flotante {
+            transform: scale(1.025) !important;
+        }
+
+        /* Texto centrado exactamente DENTRO del arco del audífono */
+        .audifono-texto-interior {
+            position: absolute !important;
+            top: 43% !important;
+            left: 50% !important;
+            transform: translate(-50%, -50%) !important;
+            width: 180px !important;
+            text-align: center !important;
+            color: #ffffff !important;
+            z-index: 3 !important;
+            pointer-events: none;
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            justify-content: center !important;
+            font-family: 'Plus Jakarta Sans', sans-serif !important;
+        }
+
+        .audifono-texto-interior .nota-musical {
+            font-size: 32px !important;
+            line-height: 1 !important;
+            margin-bottom: 4px !important;
+            color: #60a5fa !important;
+            filter: drop-shadow(0 0 10px rgba(96, 165, 250, 0.8)) !important;
+        }
+
+        .audifono-texto-interior h3 {
+            font-size: 26px !important;
+            font-weight: 800 !important;
+            letter-spacing: 1.5px !important;
+            margin: 0 !important;
+            color: #ffffff !important;
+            text-shadow: 0 2px 12px rgba(0, 0, 0, 0.6) !important;
+        }
+
+        .audifono-texto-interior p {
+            font-size: 13px !important;
+            font-weight: 600 !important;
+            color: #cbd5e1 !important;
+            margin-top: 6px !important;
+            line-height: 1.3 !important;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7) !important;
+        }
+    </style>
+</head>
+<body class="body-registro-layout">
+
+<div class="registro-contenedor-card">
+
+    <!-- ─────────── 1. COLUMNA IZQUIERDA: LOGO + PASOS ─────────── -->
+    <aside class="registro-panel-izquierdo">
+        <div class="registro-side-top">
+            <div class="login-marca">
+                <span class="logo-icono">♪</span>
+                <span class="logo-texto-oscuro">MUSIX</span>
+            </div>
+
+            <div class="registro-titulo-side">
+                <h3>Registro</h3>
+                <p>Sigue los pasos para unirte</p>
+            </div>
+
+            <ul class="pasos-registro-lista">
+                <li class="paso-item activo" id="navSec1" onclick="scrollA('seccionDatos', 1)">
+                    <span class="paso-num">1</span>
+                    <span class="paso-txt">Datos básicos</span>
+                </li>
+                <li class="paso-item" id="navSec2" onclick="scrollA('seccionPreguntas', 2)">
+                    <span class="paso-num">2</span>
+                    <span class="paso-txt">Preguntas de seguridad</span>
+                </li>
+                <li class="paso-item" id="navSec3" onclick="scrollA('seccionFoto', 3)">
+                    <span class="paso-num">3</span>
+                    <span class="paso-txt">Foto de perfil</span>
+                </li>
+            </ul>
+        </div>
+
+        <div class="registro-pie-side">
+            <span>¿Ya tienes cuenta?</span>
+            <a th:href="@{/login}">Inicia sesión</a>
+        </div>
+    </aside>
+
+    <!-- ─────────── 2. COLUMNA CENTRAL: FORMULARIO ─────────── -->
+    <main class="registro-panel-formulario" id="panelScrollForm">
+        
+        <header class="form-header-central">
+            <h2>Crear cuenta</h2>
+            <p>Únete a la comunidad de MUSIX</p>
+        </header>
+
+        <article th:if="${f_mensaje}" id="cajaMensajes" class="caja-mensaje-banner">
+            <h2 th:text="${f_mensaje}"></h2>
+        </article>
+
+        <form th:action="@{/CrearUsuarioReal}" method="post" id="formRegistro" enctype="multipart/form-data" onsubmit="return validarEnvio(event)">
+
+            <!-- SECCIÓN 1: DATOS BÁSICOS -->
+            <section class="bloque-registro" id="seccionDatos">
+                <div class="bloque-encabezado">
+                    <span class="badge-bloque">1</span>
+                    <h4>DATOS BÁSICOS</h4>
+                </div>
+
+                <div class="campo">
+                    <label for="user">Usuario *</label>
+                    <input type="text" id="user" name="user" placeholder="Elige un nombre de usuario" required autocomplete="username">
+                </div>
+
+                <div class="grid-campos-doble">
+                    <div class="campo">
+                        <label for="pass">Contraseña *</label>
+                        <div class="input-eye-box">
+                            <input type="password" id="pass" name="pass" placeholder="Mínimo 8 caracteres" required minlength="8" autocomplete="new-password">
+                            <button type="button" class="btn-eye-icon" onclick="togglePass('pass', 'eye1')" tabindex="-1">
+                                <i class="fa-regular fa-eye" id="eye1"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="campo">
+                        <label for="pass2">Confirmar contraseña *</label>
+                        <div class="input-eye-box">
+                            <input type="password" id="pass2" name="pass2" placeholder="Repite la contraseña" required minlength="8" autocomplete="new-password">
+                            <button type="button" class="btn-eye-icon" onclick="togglePass('pass2', 'eye2')" tabindex="-1">
+                                <i class="fa-regular fa-eye" id="eye2"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECCIÓN 2: PREGUNTAS DE SEGURIDAD -->
+            <section class="bloque-registro" id="seccionPreguntas">
+                <div class="bloque-encabezado">
+                    <span class="badge-bloque">2</span>
+                    <h4>PREGUNTAS DE SEGURIDAD</h4>
+                </div>
+                <p class="bloque-descripcion">Selecciona 3 preguntas diferentes y escribe tus respuestas.</p>
+
+                <div class="fila-pregunta-grid">
+                    <div class="campo">
+                        <label for="pregunta1">Pregunta 1 *</label>
+                        <select id="pregunta1" name="pregunta1" class="select-moderno" required onchange="filtrarPreguntas()">
+                            <option value="">-- Elige una pregunta --</option>
+                            <option th:each="p : ${preguntas}"
+                                    th:value="${p.id}"
+                                    th:text="${p.texto}"></option>
+                        </select>
+                    </div>
+                    <div class="campo">
+                        <label for="respuesta1">Respuesta 1 *</label>
+                        <input type="text" id="respuesta1" name="respuesta1" placeholder="Tu respuesta" required>
+                    </div>
+                </div>
+
+                <div class="fila-pregunta-grid">
+                    <div class="campo">
+                        <label for="pregunta2">Pregunta 2 *</label>
+                        <select id="pregunta2" name="pregunta2" class="select-moderno" required onchange="filtrarPreguntas()">
+                            <option value="">-- Elige una pregunta --</option>
+                            <option th:each="p : ${preguntas}"
+                                    th:value="${p.id}"
+                                    th:text="${p.texto}"></option>
+                        </select>
+                    </div>
+                    <div class="campo">
+                        <label for="respuesta2">Respuesta 2 *</label>
+                        <input type="text" id="respuesta2" name="respuesta2" placeholder="Tu respuesta" required>
+                    </div>
+                </div>
+
+                <div class="fila-pregunta-grid">
+                    <div class="campo">
+                        <label for="pregunta3">Pregunta 3 *</label>
+                        <select id="pregunta3" name="pregunta3" class="select-moderno" required onchange="filtrarPreguntas()">
+                            <option value="">-- Elige una pregunta --</option>
+                            <option th:each="p : ${preguntas}"
+                                    th:value="${p.id}"
+                                    th:text="${p.texto}"></option>
+                        </select>
+                    </div>
+                    <div class="campo">
+                        <label for="respuesta3">Respuesta 3 *</label>
+                        <input type="text" id="respuesta3" name="respuesta3" placeholder="Tu respuesta" required>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECCIÓN 3: FOTO DE PERFIL -->
+            <section class="bloque-registro" id="seccionFoto">
+                <div class="bloque-encabezado">
+                    <span class="badge-bloque">3</span>
+                    <h4>FOTO DE PERFIL</h4>
+                </div>
+                <p class="bloque-descripcion">Opcional. Si no subes ninguna, se usará una por defecto.</p>
+
+                <input type="hidden" id="foto" name="foto" value="default.png">
+
+                <div class="foto-drop-box">
+                    <label for="archivoFoto" class="foto-drop-label">
+                        <div class="avatar-vista-previa" id="avatarPreviewContainer">
+                            <i class="fa-solid fa-cloud-arrow-up" id="iconSubida"></i>
+                            <img id="imgPreview" src="" alt="Avatar" style="display:none;">
+                        </div>
+                        <span id="btnTxtFoto" class="btn-adjuntar-estilo"><i class="fa-solid fa-paperclip"></i> Adjuntar imagen de perfil</span>
+                        <small id="subtxtFoto">Haz clic para seleccionar tu foto (PNG, JPG)</small>
+                    </label>
+                    <input type="file" id="archivoFoto" name="archivoFoto" accept="image/*" style="display:none;" onchange="cargarFoto(this)">
+                </div>
+            </section>
+
+            <p class="error" th:if="${error}" th:text="${error}"></p>
+
+            <div class="acciones-formulario-row">
+                <button type="submit" class="btn-secundario-outline" th:formaction="@{/CancelarCrearUsuario}" formnovalidate>Cancelar</button>
+                <button type="submit" class="btn-primario btn-crear-cuenta" th:formaction="@{/CrearUsuarioReal}">Crear usuario</button>
+            </div>
+
+            <p class="registro-link-pie">
+                ¿Ya tienes cuenta?
+                <a th:href="@{/login}">Inicia sesión</a>
+            </p>
+
+        </form>
+
+    </main>
+
+    <!-- ─────────── 3. COLUMNA DERECHA: AUDÍFONO FLOTANTE CON TEXTO ─────────── -->
+    <aside class="registro-panel-derecho-audifonos">
+        <div class="audifono-stage">
+            <img th:src="@{http://localhost:9090/imagenes/prueba2.png}" src="http://localhost:9090/imagenes/prueba2.png" onerror="this.onerror=null; this.src='/Imagenes/prueba2.png';" alt="Audífonos MUSIX" class="audifono-flotante">
+            <div class="audifono-texto-interior">
+                <div class="nota-musical">♪</div>
+                <h3>MUSIX</h3>
+                <p>La música nos conecta</p>
+            </div>
+        </div>
+    </aside>
+
+</div>
+
+<!-- SCRIPT DE FILTRADO DINÁMICO, VALIDACIONES Y SCROLL -->
+<script>
+function scrollA(idElemento, numPaso) {
+    const el = document.getElementById(idElemento);
+    const panel = document.getElementById('panelScrollForm');
+    if (el && panel) {
+        if (numPaso === 3) {
+            panel.scrollTo({ top: panel.scrollHeight, behavior: 'smooth' });
+        } else {
+            panel.scrollTo({ top: el.offsetTop - 20, behavior: 'smooth' });
+        }
+    }
+    if (numPaso) activarPasoMenu(numPaso);
+}
+
+function activarPasoMenu(num) {
+    const nav1 = document.getElementById('navSec1');
+    const nav2 = document.getElementById('navSec2');
+    const nav3 = document.getElementById('navSec3');
+    if (!nav1 || !nav2 || !nav3) return;
+    [nav1, nav2, nav3].forEach(n => n.classList.remove('activo'));
+    if (num === 1) nav1.classList.add('activo');
+    if (num === 2) nav2.classList.add('activo');
+    if (num === 3) nav3.classList.add('activo');
+}
+
+document.getElementById('panelScrollForm').addEventListener('scroll', function() {
+    const panel = this;
+    const sec2 = document.getElementById('seccionPreguntas');
+    const sec3 = document.getElementById('seccionFoto');
+    const alFinal = (panel.scrollHeight - panel.scrollTop - panel.clientHeight) < 60;
+    const posSec3 = sec3 ? (sec3.offsetTop - 150) : 9999;
+    const posSec2 = sec2 ? (sec2.offsetTop - 150) : 9999;
+    if (alFinal || panel.scrollTop >= posSec3) activarPasoMenu(3);
+    else if (panel.scrollTop >= posSec2) activarPasoMenu(2);
+    else activarPasoMenu(1);
+});
+
+function filtrarPreguntas() {
+    const p1 = document.getElementById('pregunta1');
+    const p2 = document.getElementById('pregunta2');
+    const p3 = document.getElementById('pregunta3');
+    if (!p1 || !p2 || !p3) return;
+    const selects = [p1, p2, p3];
+    const seleccionados = selects.map(s => s.value).filter(v => v !== "");
+    selects.forEach(s => {
+        const valActual = s.value;
+        Array.from(s.options).forEach(opt => {
+            if (opt.value === "") return;
+            if (seleccionados.includes(opt.value) && opt.value !== valActual) {
+                opt.disabled = true;
+                opt.hidden = true;
+            } else {
+                opt.disabled = false;
+                opt.hidden = false;
+            }
+        });
+    });
+}
+
+function togglePass(idInput, idIcono) {
+    const input = document.getElementById(idInput);
+    const icono = document.getElementById(idIcono);
+    if (!input) return;
+    if (input.type === 'password') {
+        input.type = 'text';
+        if (icono) { icono.classList.remove('fa-eye'); icono.classList.add('fa-eye-slash'); }
+    } else {
+        input.type = 'password';
+        if (icono) { icono.classList.remove('fa-eye-slash'); icono.classList.add('fa-eye'); }
+    }
+}
+
+function cargarFoto(input) {
+    if (input.files && input.files[0]) {
+        const file = input.files[0];
+        document.getElementById('foto').value = file.name;
+        document.getElementById('btnTxtFoto').innerHTML = '<i class="fa-solid fa-check"></i> ' + file.name;
+        document.getElementById('subtxtFoto').innerText = 'Foto lista para adjuntar';
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const previewImg = document.getElementById('imgPreview');
+            const iconSubida = document.getElementById('iconSubida');
+            previewImg.src = e.target.result;
+            previewImg.style.display = 'block';
+            iconSubida.style.display = 'none';
+            setTimeout(() => {
+                const panel = document.getElementById('panelScrollForm');
+                if (panel) panel.scrollTo({ top: panel.scrollHeight, behavior: 'smooth' });
+            }, 100);
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+function validarEnvio(e) {
+    const p1 = document.getElementById('pass').value;
+    const p2 = document.getElementById('pass2').value;
+    if (p1 !== p2) {
+        alert('Las contraseñas no coinciden.');
+        scrollA('seccionDatos');
+        e.preventDefault();
+        return false;
+    }
+    const pr1 = document.getElementById('pregunta1').value;
+    const r1 = document.getElementById('respuesta1').value.trim();
+    const pr2 = document.getElementById('pregunta2').value;
+    const r2 = document.getElementById('respuesta2').value.trim();
+    const pr3 = document.getElementById('pregunta3').value;
+    const r3 = document.getElementById('respuesta3').value.trim();
+    if (!pr1 || !r1 || !pr2 || !r2 || !pr3 || !r3) {
+        alert('Por favor, responde a las 3 preguntas de seguridad requeridas.');
+        scrollA('seccionPreguntas');
+        e.preventDefault();
+        return false;
+    }
+    return true;
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    filtrarPreguntas();
+    const sec1 = document.getElementById('seccionDatos');
+    const sec2 = document.getElementById('seccionPreguntas');
+    const sec3 = document.getElementById('seccionFoto');
+    if (sec1) {
+        sec1.addEventListener('focusin', () => activarPasoMenu(1));
+        sec1.addEventListener('click', () => activarPasoMenu(1));
+    }
+    if (sec2) {
+        sec2.addEventListener('focusin', () => activarPasoMenu(2));
+        sec2.addEventListener('click', () => activarPasoMenu(2));
+    }
+    if (sec3) {
+        sec3.addEventListener('focusin', () => activarPasoMenu(3));
+        sec3.addEventListener('click', () => activarPasoMenu(3));
+    }
+});
+</script>
+
+</body>
+</html>

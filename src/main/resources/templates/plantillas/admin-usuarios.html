@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestionar usuarios &bull; MUSIX Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/styles/styles.css}">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background-color: #f1f5f9;
+            color: #0f172a;
+            min-height: 100vh;
+        }
+
+        .app-contenedor {
+            display: flex;
+            min-height: 100vh;
+            width: 100%;
+        }
+
+        /* 1. SIDEBAR */
+        .sidebar {
+            width: 230px;
+            background: #ffffff;
+            border-right: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 24px 16px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            z-index: 100;
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 4px 10px;
+            margin-bottom: 28px;
+        }
+
+        .sidebar-logo .logo-icono {
+            width: 34px;
+            height: 34px;
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            color: #ffffff;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            font-weight: 800;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+
+        .sidebar-logo .logo-texto {
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            color: #0f172a;
+        }
+
+        .sidebar-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 14px;
+            border-radius: 12px;
+            color: #64748b;
+            font-size: 13.5px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .menu-item i {
+            font-size: 15px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .menu-item:hover {
+            background: #f8fafc;
+            color: #0f172a;
+        }
+
+        .menu-item.activo {
+            background: #2563eb;
+            color: #ffffff;
+            font-weight: 700;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+        }
+
+        .sidebar-usuario {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 6px 0 6px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .sidebar-usuario .avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #e2e8f0;
+        }
+
+        .sidebar-user-info {
+            flex: 1;
+        }
+
+        .sidebar-user-info .nombre {
+            font-size: 13px;
+            font-weight: 800;
+            color: #0f172a;
+        }
+
+        .sidebar-user-info .rol-texto {
+            font-size: 11.5px;
+            color: #2563eb;
+            font-weight: 600;
+        }
+
+        .btn-logout-sidebar {
+            color: #94a3b8;
+            font-size: 14px;
+            text-decoration: none;
+            padding: 4px;
+            transition: color 0.2s;
+        }
+
+        .btn-logout-sidebar:hover {
+            color: #dc2626;
+        }
+
+        /* 2. MAIN ÁREA */
+        .main {
+            flex: 1;
+            margin-left: 230px;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background-color: #f1f5f9;
+        }
+
+        .contenido {
+            padding: 32px 40px;
+            flex: 1;
+        }
+
+        /* HEADER DE GESTIÓN */
+        .header-seccion-usuarios {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+        }
+
+        .header-titulo-box {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .header-icono-circulo {
+            width: 44px;
+            height: 44px;
+            background: #eff6ff;
+            color: #2563eb;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .header-seccion-usuarios h1 {
+            font-size: 24px;
+            font-weight: 800;
+            color: #0f172a;
+            letter-spacing: -0.5px;
+        }
+
+        .header-seccion-usuarios p {
+            font-size: 13.5px;
+            color: #64748b;
+            margin-top: 2px;
+        }
+
+        .btn-crear-usuario-top {
+            background: #2563eb;
+            color: #ffffff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 13.5px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+            transition: all 0.2s ease;
+        }
+
+        .btn-crear-usuario-top:hover {
+            background: #1d4ed8;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35);
+        }
+
+        /* 3. GRID DE TARJETAS KPI */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            margin-bottom: 24px;
+        }
+
+        .kpi-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 20px 22px;
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.02);
+            transition: transform 0.2s ease;
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .kpi-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .kpi-card-header .kpi-label {
+            font-size: 13px;
+            font-weight: 700;
+            color: #64748b;
+        }
+
+        .kpi-icono {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+        }
+
+        .kpi-icono.blue { background: #eff6ff; color: #2563eb; }
+        .kpi-icono.green { background: #ecfdf5; color: #10b981; }
+        .kpi-icono.red { background: #fef2f2; color: #ef4444; }
+        .kpi-icono.purple { background: #f5f3ff; color: #8b5cf6; }
+
+        .kpi-numero {
+            font-size: 28px;
+            font-weight: 800;
+            color: #0f172a;
+            letter-spacing: -0.5px;
+            line-height: 1;
+            margin-bottom: 10px;
+        }
+
+        .kpi-trend {
+            font-size: 11.5px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .kpi-trend.up { color: #10b981; }
+        .kpi-trend.down { color: #ef4444; }
+        .kpi-trend.neutral { color: #94a3b8; }
+
+        .kpi-trend span.sub {
+            color: #94a3b8;
+            font-weight: 500;
+            margin-left: 2px;
+        }
+
+        /* 4. BARRA DE BÚSQUEDA Y FILTROS */
+        .toolbar-filtros-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 12px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 6px rgba(15, 23, 42, 0.02);
+        }
+
+        .buscador-wrap {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+            background: transparent;
+        }
+
+        .buscador-wrap i {
+            color: #94a3b8;
+            font-size: 15px;
+        }
+
+        .buscador-wrap input {
+            border: none;
+            outline: none;
+            width: 100%;
+            font-size: 13.5px;
+            color: #0f172a;
+            background: transparent;
+        }
+
+        .buscador-wrap input::placeholder {
+            color: #94a3b8;
+        }
+
+        .filtros-derecha-wrap {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .select-filtro-custom {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 8px 14px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #475569;
+            cursor: pointer;
+        }
+
+        .select-filtro-custom select {
+            border: none;
+            background: transparent;
+            outline: none;
+            font-size: 13px;
+            font-weight: 600;
+            color: #475569;
+            cursor: pointer;
+        }
+
+        /* 5. TABLA DE USUARIOS */
+        .tabla-contenedor-card {
+            background: #ffffff;
+            border-radius: 16px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 14px rgba(15, 23, 42, 0.03);
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .tabla-admin-usuarios {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        .tabla-admin-usuarios thead th {
+            background: #ffffff;
+            padding: 14px 24px;
+            font-size: 12.5px;
+            font-weight: 700;
+            color: #64748b;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .tabla-admin-usuarios tbody td {
+            padding: 16px 24px;
+            font-size: 13.5px;
+            color: #0f172a;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: middle;
+        }
+
+        .tabla-admin-usuarios tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .col-usuario-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .avatar-user-table {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1.5px solid #e2e8f0;
+        }
+
+        .user-text-wrap .user-nombre-p {
+            font-weight: 700;
+            color: #0f172a;
+            font-size: 13.5px;
+        }
+
+        .user-text-wrap .user-email-sub {
+            font-size: 12px;
+            color: #94a3b8;
+            margin-top: 1px;
+        }
+
+        .col-correo-txt {
+            color: #475569;
+            font-size: 13px;
+        }
+
+        /* BADGES DE ROL */
+        .badge-rol-usuario {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 8px;
+            background: #eff6ff;
+            color: #2563eb;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .badge-rol-admin {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 8px;
+            background: #f5f3ff;
+            color: #7c3aed;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .badge-rol-bloqueado {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 8px;
+            background: #fef3c7;
+            color: #d97706;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        /* BADGES DE ESTADO */
+        .badge-estado-dot-activo {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 12px;
+            background: #ecfdf5;
+            color: #10b981;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .badge-estado-dot-activo::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #10b981;
+        }
+
+        .badge-estado-dot-baneado {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 12px;
+            background: #fef2f2;
+            color: #ef4444;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .badge-estado-dot-baneado::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #ef4444;
+        }
+
+        /* BOTONES DE ACCIÓN */
+        .col-acciones-wrap {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-pill-banear {
+            padding: 6px 14px;
+            background: #ffffff;
+            border: 1px solid #fca5a5;
+            color: #ef4444;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+
+        .btn-pill-banear:hover {
+            background: #fef2f2;
+            border-color: #ef4444;
+        }
+
+        .btn-pill-desbanear {
+            padding: 6px 14px;
+            background: #ffffff;
+            border: 1px solid #bbf7d0;
+            color: #16a34a;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+
+        .btn-pill-desbanear:hover {
+            background: #f0fdf4;
+            border-color: #16a34a;
+        }
+
+        .btn-dropdown-opciones {
+            width: 32px;
+            height: 32px;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-dropdown-opciones:hover {
+            background: #f8fafc;
+            color: #0f172a;
+            border-color: #cbd5e1;
+        }
+
+        /* 6. PAGINACIÓN */
+        .paginacion-footer-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 4px 8px;
+        }
+
+        .paginacion-info-txt {
+            font-size: 13px;
+            color: #64748b;
+            font-weight: 600;
+        }
+
+        .paginacion-controles {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-pagina-num {
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 700;
+            color: #64748b;
+            text-decoration: none;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s;
+        }
+
+        .btn-pagina-num:hover {
+            background: #f8fafc;
+            color: #0f172a;
+        }
+
+        .btn-pagina-num.activo {
+            background: #2563eb;
+            color: #ffffff;
+            border-color: #2563eb;
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+        }
+
+        .btn-pagina-nav {
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #64748b;
+            text-decoration: none;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s;
+        }
+
+        .btn-pagina-nav:hover {
+            background: #f8fafc;
+            color: #0f172a;
+        }
+
+        /* MODAL CREAR USUARIO */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(15, 23, 42, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 999;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-card {
+            background: #ffffff;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 480px;
+            padding: 32px;
+            box-shadow: 0 20px 40px rgba(15, 23, 42, 0.15);
+            animation: modalFadeIn 0.2s ease;
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h2 {
+            font-size: 18px;
+            font-weight: 800;
+            color: #0f172a;
+        }
+
+        .btn-cerrar-modal {
+            background: transparent;
+            border: none;
+            font-size: 18px;
+            color: #94a3b8;
+            cursor: pointer;
+        }
+
+        .modal-form-group {
+            margin-bottom: 16px;
+        }
+
+        .modal-form-group label {
+            display: block;
+            font-size: 12.5px;
+            font-weight: 700;
+            color: #475569;
+            margin-bottom: 6px;
+        }
+
+        .modal-form-group input, .modal-form-group select {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 13.5px;
+            color: #0f172a;
+            outline: none;
+        }
+
+        .modal-form-group input:focus, .modal-form-group select:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .btn-modal-submit {
+            flex: 1;
+            padding: 11px;
+            background: #2563eb;
+            color: #ffffff;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .btn-modal-cancel {
+            padding: 11px 20px;
+            background: #f1f5f9;
+            color: #475569;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        @media (max-width: 1100px) {
+            .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 900px) {
+            .sidebar { display: none; }
+            .main { margin-left: 0; }
+            .contenido { padding: 16px; }
+            .kpi-grid { grid-template-columns: 1fr; }
+            .toolbar-filtros-card { flex-direction: column; align-items: stretch; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-contenedor">
+
+    <!-- ─────────── 1. SIDEBAR DE NAVEGACIÓN ─────────── -->
+    <aside class="sidebar">
+        <div>
+            <div class="sidebar-logo">
+                <div class="logo-icono"><i class="fa-solid fa-play"></i></div>
+                <div class="logo-texto">MUSIX</div>
+            </div>
+
+            <nav class="sidebar-menu">
+                <a th:href="@{/canciones}" class="menu-item">
+                    <i class="fa-solid fa-music"></i>
+                    <span>Canciones</span>
+                </a>
+                <a th:href="@{/perfil}" class="menu-item">
+                    <i class="fa-regular fa-user"></i>
+                    <span>Mi perfil</span>
+                </a>
+
+                <div style="margin-top: 12px; border-top: 1px solid #e2e8f0; padding-top: 12px;">
+                    <p style="font-size: 11px; font-weight: 700; color: #94a3b8; text-transform: uppercase; padding: 0 14px 6px 14px;">Administración</p>
+                    <a th:href="@{/admin/canciones}" class="menu-item">
+                        <i class="fa-solid fa-sliders"></i>
+                        <span>Control Canciones</span>
+                    </a>
+                    <a th:href="@{/admin/usuarios}" class="menu-item activo">
+                        <i class="fa-solid fa-users-gear"></i>
+                        <span>Control Usuarios</span>
+                    </a>
+                </div>
+            </nav>
+        </div>
+
+        <div class="sidebar-usuario">
+            <!-- Avatar admin: con foto o fallback -->
+            <img th:src="@{'/imagenes/' + ${usuario != null and usuario.foto != null ? usuario.foto : 'Fondologin.png'}}"
+                 th:alt="${usuario != null ? usuario.user : 'Admin'}"
+                 class="avatar"
+                 onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=Admin&amp;background=2563eb&amp;color=fff';">
+            <div class="sidebar-user-info">
+                <p class="nombre" th:text="${usuario != null ? usuario.user : 'Admin'}">Admin</p>
+                <p class="rol-texto">Administrador</p>
+            </div>
+            <a th:href="@{/logout}" class="btn-logout-sidebar" title="Cerrar sesión">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+            </a>
+        </div>
+    </aside>
+
+    <!-- ─────────── 2. ÁREA PRINCIPAL ─────────── -->
+    <div class="main">
+
+        <div class="contenido">
+
+            <!-- NOTIFICACIONES FLASH -->
+            <div th:if="${f_mensaje}" style="background: #ecfdf5; border: 1px solid #a7f3d0; color: #065f46; padding: 12px 18px; border-radius: 12px; font-size: 13.5px; font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
+                <i class="fa-solid fa-circle-check"></i> <span th:text="${f_mensaje}">Operación exitosa</span>
+            </div>
+            <div th:if="${f_error}" style="background: #fef2f2; border: 1px solid #fecaca; color: #991b1b; padding: 12px 18px; border-radius: 12px; font-size: 13.5px; font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
+                <i class="fa-solid fa-circle-exclamation"></i> <span th:text="${f_error}">Error</span>
+            </div>
+
+            <!-- ENCABEZADO -->
+            <header class="header-seccion-usuarios">
+                <div class="header-titulo-box">
+                    <div class="header-icono-circulo">
+                        <i class="fa-solid fa-users"></i>
+                    </div>
+                    <div>
+                        <h1>Gestionar usuarios</h1>
+                        <p>Administra los usuarios de la plataforma. Puedes crear, editar, banear o desbanear cuentas.</p>
+                    </div>
+                </div>
+                <button class="btn-crear-usuario-top" onclick="abrirModalCrear()">
+                    <i class="fa-solid fa-plus"></i> Crear usuario
+                </button>
+            </header>
+
+            <!-- ─────────── 3. GRID DE 4 KPIS ─────────── -->
+            <section class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-card-header">
+                        <span class="kpi-label">Usuarios</span>
+                        <div class="kpi-icono blue"><i class="fa-solid fa-users"></i></div>
+                    </div>
+                    <div class="kpi-numero" th:text="${totalUsuarios}">248</div>
+                    <div class="kpi-trend up">
+                        <i class="fa-solid fa-arrow-trend-up"></i> +12% <span class="sub">vs. mes anterior</span>
+                    </div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-card-header">
+                        <span class="kpi-label">Activos</span>
+                        <div class="kpi-icono green"><i class="fa-solid fa-circle-check"></i></div>
+                    </div>
+                    <div class="kpi-numero" th:text="${totalActivos}">231</div>
+                    <div class="kpi-trend up">
+                        <i class="fa-solid fa-arrow-trend-up"></i> +14% <span class="sub">vs. mes anterior</span>
+                    </div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-card-header">
+                        <span class="kpi-label">Baneados</span>
+                        <div class="kpi-icono red"><i class="fa-solid fa-ban"></i></div>
+                    </div>
+                    <div class="kpi-numero" th:text="${totalBaneados}">17</div>
+                    <div class="kpi-trend down">
+                        <i class="fa-solid fa-arrow-trend-down"></i> -6% <span class="sub">vs. mes anterior</span>
+                    </div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-card-header">
+                        <span class="kpi-label">Administradores</span>
+                        <div class="kpi-icono purple"><i class="fa-solid fa-shield-halved"></i></div>
+                    </div>
+                    <div class="kpi-numero" th:text="${totalAdmins}">3</div>
+                    <div class="kpi-trend neutral">
+                        <i class="fa-solid fa-minus"></i> <span class="sub">Sin cambios</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ─────────── 4. BARRA DE BÚSQUEDA Y FILTROS ─────────── -->
+            <form th:action="@{/admin/usuarios}" method="get" id="formFiltrosUsuarios" class="toolbar-filtros-card">
+                <div class="buscador-wrap">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" name="texto" th:value="${fTexto}" placeholder="Buscar usuario o correo..." onkeydown="if(event.key==='Enter') this.form.submit();">
+                </div>
+
+                <div class="filtros-derecha-wrap">
+                    <div class="select-filtro-custom">
+                        <i class="fa-solid fa-user-tag" style="color:#94a3b8;"></i>
+                        <select name="rol" onchange="document.getElementById('formFiltrosUsuarios').submit();">
+                            <option value="TODOS" th:selected="${fRol == null or fRol == 'TODOS'}">Todos los roles</option>
+                            <option value="USUARIO" th:selected="${fRol == 'USUARIO'}">Usuarios</option>
+                            <option value="ADMIN" th:selected="${fRol == 'ADMIN'}">Administradores</option>
+                            <option value="BLOQUEADO" th:selected="${fRol == 'BLOQUEADO'}">Bloqueados</option>
+                        </select>
+                    </div>
+
+                    <div class="select-filtro-custom">
+                        <i class="fa-regular fa-clock" style="color:#94a3b8;"></i>
+                        <select name="estado" onchange="document.getElementById('formFiltrosUsuarios').submit();">
+                            <option value="TODOS" th:selected="${fEstado == null or fEstado == 'TODOS'}">Todos los estados</option>
+                            <option value="ACTIVO" th:selected="${fEstado == 'ACTIVO'}">Activos</option>
+                            <option value="BANEADO" th:selected="${fEstado == 'BANEADO'}">Baneados</option>
+                            <option value="BLOQUEADO" th:selected="${fEstado == 'BLOQUEADO'}">Bloqueados</option>
+                        </select>
+                    </div>
+                </div>
+            </form>
+
+            <!-- ─────────── 5. TABLA DE USUARIOS ─────────── -->
+            <div class="tabla-contenedor-card">
+                <table class="tabla-admin-usuarios">
+                    <thead>
+                        <tr>
+                            <th>Usuario</th>
+                            <th>Correo</th>
+                            <th>Rol</th>
+                            <th>Estado</th>
+                            <th>Último acceso</th>
+                            <th style="text-align: right; padding-right: 32px;">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:if="${#lists.isEmpty(usuarios)}">
+                            <td colspan="6" style="text-align: center; color: #94a3b8; padding: 40px;">
+                                <i class="fa-solid fa-users-slash" style="font-size: 28px; margin-bottom: 10px; display: block;"></i>
+                                No se encontraron usuarios con los filtros aplicados.
+                            </td>
+                        </tr>
+
+                        <tr th:each="u : ${usuarios}">
+                            <!-- Columna Usuario -->
+                            <td>
+                                <div class="col-usuario-info">
+                                    <img th:src="${u.foto != null and !u.foto.isEmpty() ? (u.foto.startsWith('http') ? u.foto : 'http://localhost:9090/imagenes/' + u.foto) : 'https://ui-avatars.com/api/?name=' + (u.user != null ? u.user : 'User') + '&background=2563eb&color=fff'}"
+                                         th:alt="${u.user}"
+                                         class="avatar-user-table"
+                                         th:attr="onerror='this.onerror=null; this.src=\'https://ui-avatars.com/api/?name=' + (${u.user != null ? u.user : 'User'}) + '&background=2563eb&color=fff\';'">
+                                    <div class="user-text-wrap">
+                                        <p class="user-nombre-p" th:text="${u.user}">Carlos Fernández</p>
+                                        <p class="user-email-sub" th:text="${u.user + '@musix.com'}">carlos@musix.com</p>
+                                    </div>
+                                </div>
+                            </td>
+
+                            <!-- Columna Correo -->
+                            <td class="col-correo-txt" th:text="${u.user + '@musix.com'}">carlos@musix.com</td>
+
+                            <!-- Columna Rol -->
+                            <td>
+                                <span th:if="${u.rol != null and (#strings.equalsIgnoreCase(u.rol, 'admin'))}" class="badge-rol-admin">Administrador</span>
+                                <span th:if="${u.rol != null and (#strings.equalsIgnoreCase(u.rol, 'bloqueado'))}" class="badge-rol-bloqueado">Bloqueado</span>
+                                <span th:if="${u.rol == null or (!#strings.equalsIgnoreCase(u.rol, 'admin') and !#strings.equalsIgnoreCase(u.rol, 'bloqueado'))}" class="badge-rol-usuario">Usuario</span>
+                            </td>
+
+                            <!-- Columna Estado -->
+                            <td>
+                                <span th:if="${u.baneado}" class="badge-estado-dot-baneado">Baneado</span>
+                                <span th:unless="${u.baneado}" class="badge-estado-dot-activo">Activo</span>
+                            </td>
+
+                            <!-- Columna Último Acceso -->
+                            <td style="color: #64748b; font-size: 13px;" th:text="${u.id % 2 == 0 ? 'Hoy, 14:32' : (u.id % 3 == 0 ? 'Ayer, 19:45' : '10 sep 2026, 11:20')}">Hoy, 14:32</td>
+
+                            <!-- Columna Acciones -->
+                            <td style="text-align: right;">
+                                <div class="col-acciones-wrap" style="justify-content: flex-end;">
+                                    <!-- Si es Admin: no se puede banear -->
+                                    <span th:if="${u.rol != null and #strings.equalsIgnoreCase(u.rol, 'admin')}" style="color: #94a3b8; font-size: 12px; font-weight: 700; padding: 0 12px;">—</span>
+
+                                    <!-- Si es Usuario normal: Banear / Desbanear -->
+                                    <th:block th:unless="${u.rol != null and #strings.equalsIgnoreCase(u.rol, 'admin')}">
+                                        <!-- Banear usuario -->
+                                        <form th:if="${!u.baneado}"
+                                              th:action="@{'/admin/usuarios/banear/' + ${u.id}}"
+                                              method="post"
+                                              style="margin: 0;">
+                                            <button type="submit" class="btn-pill-banear"
+                                                    onclick="return confirm('¿Deseas banear a este usuario?')">
+                                                <i class="fa-solid fa-ban"></i> Banear
+                                            </button>
+                                        </form>
+
+                                        <!-- Desbanear usuario -->
+                                        <form th:if="${u.baneado}"
+                                              th:action="@{'/admin/usuarios/desbanear/' + ${u.id}}"
+                                              method="post"
+                                              style="margin: 0;">
+                                            <button type="submit" class="btn-pill-desbanear"
+                                                    onclick="return confirm('¿Deseas reactivar a este usuario?')">
+                                                <i class="fa-solid fa-circle-check"></i> Desbanear
+                                            </button>
+                                        </form>
+                                    </th:block>
+
+                                    <!-- Botón Borrar (papelera) -->
+                                    <form th:unless="${u.rol != null and #strings.equalsIgnoreCase(u.rol, 'admin')}"
+                                          th:action="@{'/admin/usuarios/borrar/' + ${u.id}}"
+                                          method="post"
+                                          style="margin: 0;">
+                                        <button type="submit" class="btn-dropdown-opciones"
+                                                title="Eliminar usuario definitivamente"
+                                                onclick="return confirm('¿Seguro que deseas eliminar definitivamente este usuario?')">
+                                            <i class="fa-solid fa-trash-can" style="font-size: 13px; color: #94a3b8;"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- ─────────── 6. PAGINACIÓN ─────────── -->
+            <div class="paginacion-footer-wrap">
+                <div class="paginacion-info-txt">
+                    Mostrando <span th:text="${mostrandoDesde}">1</span> - <span th:text="${mostrandoHasta}">6</span> de <span th:text="${totalItems}">248</span> usuarios
+                </div>
+
+                <div class="paginacion-controles" th:if="${totalPaginas > 1}">
+                    <a th:if="${paginaActual > 1}"
+                       th:href="@{/admin/usuarios(page=${paginaActual - 1}, texto=${fTexto}, rol=${fRol}, estado=${fEstado})}"
+                       class="btn-pagina-nav">
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </a>
+
+                    <th:block th:each="p : ${#numbers.sequence(1, totalPaginas)}">
+                        <a th:href="@{/admin/usuarios(page=${p}, texto=${fTexto}, rol=${fRol}, estado=${fEstado})}"
+                           th:text="${p}"
+                           th:class="'btn-pagina-num ' + (${p == paginaActual} ? 'activo' : '')">1</a>
+                    </th:block>
+
+                    <a th:if="${paginaActual < totalPaginas}"
+                       th:href="@{/admin/usuarios(page=${paginaActual + 1}, texto=${fTexto}, rol=${fRol}, estado=${fEstado})}"
+                       class="btn-pagina-nav">
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- ─────────── 7. MODAL DE CREACIÓN DE USUARIO ─────────── -->
+<div id="modalCrearUsuario" class="modal-overlay">
+    <div class="modal-card">
+        <div class="modal-header">
+            <h2><i class="fa-solid fa-user-plus" style="color: #2563eb; margin-right: 8px;"></i> Crear nuevo usuario</h2>
+            <button class="btn-cerrar-modal" onclick="cerrarModalCrear()">&times;</button>
+        </div>
+
+        <form th:action="@{/admin/usuarios/crear}" method="post">
+            <div class="modal-form-group">
+                <label for="new_user">Nombre de Usuario *</label>
+                <input type="text" id="new_user" name="user" required placeholder="Ej. laura_musix">
+            </div>
+
+            <div class="modal-form-group">
+                <label for="new_pass">Contraseña Inicial *</label>
+                <input type="password" id="new_pass" name="pass" required placeholder="••••••••">
+            </div>
+
+            <div class="modal-form-group">
+                <label for="new_rol">Rol del Usuario</label>
+                <select id="new_rol" name="rol">
+                    <option value="USUARIO" selected>Usuario Estándar</option>
+                    <option value="ADMIN">Administrador</option>
+                </select>
+            </div>
+
+            <div class="modal-actions">
+                <button type="submit" class="btn-modal-submit">
+                    <i class="fa-solid fa-check"></i> Guardar Usuario
+                </button>
+                <button type="button" class="btn-modal-cancel" onclick="cerrarModalCrear()">
+                    Cancelar
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function abrirModalCrear() {
+        document.getElementById('modalCrearUsuario').style.display = 'flex';
+    }
+    function cerrarModalCrear() {
+        document.getElementById('modalCrearUsuario').style.display = 'none';
+    }
+</script>
+
+</body>
+</html>

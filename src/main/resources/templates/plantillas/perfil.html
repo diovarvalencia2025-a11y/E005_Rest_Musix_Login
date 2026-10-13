@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi perfil - MUSIX</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/styles/styles.css" th:href="@{/styles/styles.css}">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background-color: #edf5fd;
+            color: #0f172a;
+            min-height: 100vh;
+        }
+
+        .app-contenedor {
+            display: flex;
+            min-height: 100vh;
+            width: 100%;
+        }
+
+        /* 1. SIDEBAR */
+        .sidebar {
+            width: 230px;
+            background: #ffffff;
+            border-right: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 24px 16px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            z-index: 100;
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 4px 10px;
+            margin-bottom: 28px;
+        }
+
+        .sidebar-logo .logo-icono {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: #ffffff;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 17px;
+            font-weight: 800;
+        }
+
+        .sidebar-logo .logo-texto {
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            color: #0f172a;
+        }
+
+        .sidebar-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 14px;
+            border-radius: 12px;
+            color: #64748b;
+            font-size: 13.5px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .menu-item i {
+            font-size: 15px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .menu-item:hover {
+            background: #f8fafc;
+            color: #0f172a;
+        }
+
+        .menu-item.activo {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: #ffffff;
+            font-weight: 700;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+        }
+
+        .sidebar-usuario {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 6px 0 6px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .sidebar-usuario .avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #e2e8f0;
+        }
+
+        .sidebar-user-info {
+            flex: 1;
+        }
+
+        .sidebar-user-info .nombre {
+            font-size: 13px;
+            font-weight: 800;
+            color: #0f172a;
+        }
+
+        .sidebar-user-info .rol-texto {
+            font-size: 11.5px;
+            color: #2563eb;
+            font-weight: 600;
+        }
+
+        .btn-logout-sidebar {
+            color: #94a3b8;
+            font-size: 14px;
+            text-decoration: none;
+            padding: 4px;
+            transition: color 0.2s;
+        }
+
+        .btn-logout-sidebar:hover {
+            color: #dc2626;
+        }
+
+        /* 2. ÁREA PRINCIPAL */
+        .main {
+            flex: 1;
+            margin-left: 230px;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background-color: #edf5fd;
+        }
+
+        .topbar-musix {
+            height: 64px;
+            padding: 0 36px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            background: transparent;
+            margin-top: 6px;
+        }
+
+        .topbar-der {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .btn-campana-top {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #0f172a;
+            font-size: 15px;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
+            transition: all 0.2s;
+        }
+
+        .avatar-topbar-user {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #ffffff;
+            box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08);
+        }
+
+        .contenido {
+            padding: 16px 36px 36px 36px;
+            flex: 1;
+        }
+
+        .contenido-header-perfil {
+            margin-bottom: 24px;
+        }
+
+        .contenido-header-perfil h1 {
+            font-size: 22px;
+            font-weight: 800;
+            color: #0f172a;
+        }
+
+        .contenido-header-perfil p {
+            font-size: 13.5px;
+            color: #64748b;
+            margin-top: 3px;
+        }
+
+        .perfil-columnas-card {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 24px;
+            align-items: start;
+        }
+
+        .tarjeta-foto-perfil {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 20px;
+            padding: 32px 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
+        }
+
+        .avatar-perfil-wrap {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin-bottom: 16px;
+        }
+
+        .avatar-perfil-img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #eff6ff;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.15);
+        }
+
+        .btn-cambiar-foto-badge {
+            position: absolute;
+            bottom: 4px;
+            right: 4px;
+            background: #2563eb;
+            color: #ffffff;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: 2px solid #ffffff;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            transition: all 0.2s;
+        }
+
+        .btn-cambiar-foto-badge:hover {
+            background: #1d4ed8;
+            transform: scale(1.08);
+        }
+
+        .perfil-user-title {
+            font-size: 17px;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 4px;
+        }
+
+        .perfil-rol-badge {
+            background: #dbeafe;
+            color: #1d4ed8;
+            font-size: 11.5px;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+
+        .btn-subir-foto-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #f8fafc;
+            border: 1.5px dashed #cbd5e1;
+            color: #475569;
+            font-size: 12.5px;
+            font-weight: 700;
+            padding: 9px 18px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .btn-subir-foto-label:hover {
+            background: #eff6ff;
+            border-color: #2563eb;
+            color: #2563eb;
+        }
+
+        .tarjeta-formulario-perfil {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 20px;
+            padding: 32px 36px;
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
+        }
+
+        .seccion-titulo-perfil {
+            font-size: 15px;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .seccion-titulo-perfil i {
+            color: #2563eb;
+        }
+
+        .grid-campos-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+            margin-bottom: 20px;
+        }
+
+        .campo-grupo {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 16px;
+        }
+
+        .campo-grupo label {
+            font-size: 12.5px;
+            font-weight: 700;
+            color: #475569;
+        }
+
+        .campo-grupo input, .campo-grupo select {
+            padding: 10px 14px;
+            background: #f8fafc;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 13.5px;
+            color: #0f172a;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .campo-grupo input:focus, .campo-grupo select:focus {
+            background: #ffffff;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .fieldset-seguridad-perfil {
+            border: 1px solid #e2e8f0;
+            background: #f8fafc;
+            border-radius: 14px;
+            padding: 20px;
+            margin-top: 14px;
+            margin-bottom: 24px;
+        }
+
+        .fieldset-seguridad-perfil legend {
+            font-size: 13px;
+            font-weight: 800;
+            color: #1e293b;
+            padding: 0 8px;
+            background: #f8fafc;
+            border-radius: 4px;
+        }
+
+        .bloque-pregunta-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 14px;
+            margin-bottom: 12px;
+        }
+
+        .bloque-pregunta-card:last-child {
+            margin-bottom: 0;
+        }
+
+        .bloque-pregunta-card .pregunta-header {
+            font-size: 12px;
+            font-weight: 700;
+            color: #2563eb;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .opcional-tag {
+            font-size: 10.5px;
+            font-weight: 600;
+            color: #94a3b8;
+            background: #f1f5f9;
+            padding: 2px 8px;
+            border-radius: 10px;
+            margin-left: 6px;
+            text-transform: uppercase;
+        }
+
+        .alerta-error-musix {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #b91c1c;
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-guardar-perfil {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 700;
+            padding: 12px 28px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+            transition: all 0.2s;
+        }
+
+        .btn-guardar-perfil:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35);
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-contenedor">
+
+    <!-- 1. SIDEBAR -->
+    <aside class="sidebar">
+        <div>
+            <div class="sidebar-logo">
+                <div class="logo-icono"><i class="fa-solid fa-play"></i></div>
+                <div class="logo-texto">MUSIX</div>
+            </div>
+
+            <nav class="sidebar-menu">
+                <a th:href="@{/canciones}" class="menu-item">
+                    <i class="fa-solid fa-music"></i>
+                    <span>Canciones</span>
+                </a>
+                <a th:if="${usuario == null or !(#strings.equalsIgnoreCase(usuario.rol, 'admin'))}" th:href="@{/mis-canciones}" class="menu-item">
+                    <i class="fa-solid fa-compact-disc"></i>
+                    <span>Mis canciones</span>
+                </a>
+                <a th:href="@{/perfil}" class="menu-item activo">
+                    <i class="fa-solid fa-user"></i>
+                    <span>Mi perfil</span>
+                </a>
+
+                <div th:if="${session.usuario != null and session.usuario.rol == 'ADMIN'}" style="margin-top: 12px; border-top: 1px solid #e2e8f0; padding-top: 12px;">
+                    <p style="font-size: 11px; font-weight: 700; color: #94a3b8; text-transform: uppercase; padding: 0 14px 6px 14px;">Administración</p>
+                    <a th:href="@{/admin/canciones}" class="menu-item">
+                        <i class="fa-solid fa-sliders"></i>
+                        <span>Control Canciones</span>
+                    </a>
+                    <a th:href="@{/admin/usuarios}" class="menu-item">
+                        <i class="fa-solid fa-users-gear"></i>
+                        <span>Control Usuarios</span>
+                    </a>
+                </div>
+            </nav>
+        </div>
+
+        <div class="sidebar-usuario">
+            <img th:if="${usuario != null and usuario.foto != null and !usuario.foto.isEmpty()}"
+                 th:src="@{'/imagenes/' + ${usuario.foto}}"
+                 th:alt="${usuario != null ? usuario.user : 'Usuario'}"
+                 alt="Avatar"
+                 class="avatar"
+                 onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=User&amp;background=2563eb&amp;color=fff';">
+            <img th:unless="${usuario != null and usuario.foto != null and !usuario.foto.isEmpty()}"
+                 th:src="'https://ui-avatars.com/api/?name=' + (usuario != null ? usuario.user : 'Usuario') + '&amp;background=2563eb&amp;color=fff'"
+                 alt="Avatar"
+                 class="avatar">
+
+            <div class="sidebar-user-info">
+                <div class="nombre" th:text="${usuario != null ? usuario.user : 'Usuario'}">David</div>
+                <div class="rol-texto" th:text="${usuario != null ? usuario.rol : 'Usuario'}">Usuario</div>
+            </div>
+            <a th:href="@{/logout}" class="btn-logout-sidebar" title="Cerrar sesión">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+            </a>
+        </div>
+    </aside>
+
+    <!-- 2. ÁREA PRINCIPAL -->
+    <div class="main">
+
+        <header class="topbar-musix">
+            <div class="topbar-der">
+                <button class="btn-campana-top" title="Notificaciones"><i class="fa-regular fa-bell"></i></button>
+                <img th:if="${usuario != null and usuario.foto != null and !usuario.foto.isEmpty()}"
+                     th:src="${usuario.foto.startsWith('http') ? usuario.foto : 'http://localhost:9090/imagenes/' + usuario.foto}"
+                     th:alt="${usuario != null ? usuario.user : 'U'}"
+                     alt="Avatar"
+                     class="avatar-topbar-user"
+                     onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=User&amp;background=2563eb&amp;color=fff';">
+                <img th:unless="${usuario != null and usuario.foto != null and !usuario.foto.isEmpty()}"
+                     th:src="'https://ui-avatars.com/api/?name=' + (usuario != null ? usuario.user : 'U') + '&amp;background=2563eb&amp;color=fff'"
+                     alt="Avatar"
+                     class="avatar-topbar-user">
+            </div>
+        </header>
+
+        <div class="contenido">
+
+            <div class="contenido-header-perfil">
+                <h1>Configuración de mi Perfil</h1>
+                <p>Gestiona tu información personal, foto de perfil y preguntas de recuperación de cuenta</p>
+            </div>
+
+            <!-- FORMULARIO DE PERFIL -->
+            <form class="form-perfil"
+                  th:action="@{/perfil}"
+                  method="post"
+                  enctype="multipart/form-data">
+
+                <div class="perfil-columnas-card">
+
+                    <!-- COLUMNA IZQUIERDA: FOTO -->
+                    <div class="tarjeta-foto-perfil">
+                        <div class="avatar-perfil-wrap">
+                            <img id="avatarPreview"
+                                 th:src="${usuario != null and usuario.foto != null and !usuario.foto.isEmpty()
+                                          ? (usuario.foto.startsWith('http') ? usuario.foto : 'http://localhost:9090/imagenes/' + usuario.foto)
+                                          : 'https://ui-avatars.com/api/?name=' + (usuario != null ? usuario.user : 'David') + '&amp;background=2563eb&amp;color=fff'}"
+                                 th:alt="${usuario != null ? usuario.user : 'David'}"
+                                 alt="Avatar"
+                                 class="avatar-perfil-img"
+                                 onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=User&amp;background=2563eb&amp;color=fff';">
+                            <label for="foto" class="btn-cambiar-foto-badge" title="Subir nueva foto">
+                                <i class="fa-solid fa-camera"></i>
+                            </label>
+                        </div>
+
+                        <h3 class="perfil-user-title" th:text="${usuario != null ? usuario.user : 'David'}">David</h3>
+                        <span class="perfil-rol-badge" th:text="${usuario != null ? usuario.rol : 'Usuario'}">Usuario</span>
+
+                        <label for="foto" class="btn-subir-foto-label">
+                            <i class="fa-solid fa-cloud-arrow-up"></i> Cambiar imagen
+                        </label>
+                        <input type="file" id="foto" name="foto" accept="image/*" style="display:none;" onchange="previsualizarFoto(event)">
+                        <p id="nombreArchivoFoto" style="font-size: 11px; color: #64748b; margin-top: 8px;"></p>
+                    </div>
+
+                    <!-- COLUMNA DERECHA: DATOS -->
+                    <div class="tarjeta-formulario-perfil">
+
+                        <div class="seccion-titulo-perfil">
+                            <i class="fa-solid fa-id-card"></i>
+                            <span>Datos Principales</span>
+                        </div>
+
+                        <div class="campo-grupo">
+                            <label for="user">Nombre de usuario *</label>
+                            <input type="text" id="user" name="user" th:value="${usuario != null ? usuario.user : ''}" required>
+                        </div>
+
+                        <div class="grid-campos-2">
+                            <div class="campo-grupo" style="margin-bottom: 0;">
+                                <label for="pass">Nueva contraseña <span class="opcional-tag">Opcional</span></label>
+                                <input type="password" id="pass" name="pass" placeholder="Dejar en blanco para conservar">
+                            </div>
+                            <div class="campo-grupo" style="margin-bottom: 0;">
+                                <label for="pass2">Confirmar contraseña</label>
+                                <input type="password" id="pass2" name="pass2" placeholder="Repite la nueva contraseña">
+                            </div>
+                        </div>
+
+                        <!-- PREGUNTAS DE SEGURIDAD (OPCIONALES) -->
+                        <div class="seccion-titulo-perfil" style="margin-top: 24px;">
+                            <i class="fa-solid fa-shield-halved"></i>
+                            <span>Preguntas de Seguridad <span class="opcional-tag">Opcional</span></span>
+                        </div>
+
+                        <fieldset class="fieldset-seguridad-perfil">
+                            <legend><i class="fa-solid fa-key" style="color: #2563eb; font-size: 11px;"></i> Recuperación de cuenta (opcional)</legend>
+
+                            <!-- PREGUNTA 1 -->
+                            <div class="bloque-pregunta-card">
+                                <div class="pregunta-header"><i class="fa-solid fa-circle-question"></i> Pregunta de seguridad 1</div>
+                                <div class="campo-grupo">
+                                    <select id="pregunta1" name="pregunta1" class="select-pregunta">
+                                        <option value="">-- Elige una pregunta --</option>
+                                        <option th:each="p : ${preguntas}"
+                                                th:value="${p.id}"
+                                                th:text="${p.texto}"></option>
+                                    </select>
+                                </div>
+                                <div class="campo-grupo" style="margin-bottom: 0;">
+                                    <input type="text" id="respuesta1" name="respuesta1" placeholder="Escribe tu respuesta exacta">
+                                </div>
+                            </div>
+
+                            <!-- PREGUNTA 2 -->
+                            <div class="bloque-pregunta-card">
+                                <div class="pregunta-header"><i class="fa-solid fa-circle-question"></i> Pregunta de seguridad 2</div>
+                                <div class="campo-grupo">
+                                    <select id="pregunta2" name="pregunta2" class="select-pregunta">
+                                        <option value="">-- Elige una pregunta --</option>
+                                        <option th:each="p : ${preguntas}"
+                                                th:value="${p.id}"
+                                                th:text="${p.texto}"></option>
+                                    </select>
+                                </div>
+                                <div class="campo-grupo" style="margin-bottom: 0;">
+                                    <input type="text" id="respuesta2" name="respuesta2" placeholder="Escribe tu respuesta exacta">
+                                </div>
+                            </div>
+
+                            <!-- PREGUNTA 3 -->
+                            <div class="bloque-pregunta-card">
+                                <div class="pregunta-header"><i class="fa-solid fa-circle-question"></i> Pregunta de seguridad 3</div>
+                                <div class="campo-grupo">
+                                    <select id="pregunta3" name="pregunta3" class="select-pregunta">
+                                        <option value="">-- Elige una pregunta --</option>
+                                        <option th:each="p : ${preguntas}"
+                                                th:value="${p.id}"
+                                                th:text="${p.texto}"></option>
+                                    </select>
+                                </div>
+                                <div class="campo-grupo" style="margin-bottom: 0;">
+                                    <input type="text" id="respuesta3" name="respuesta3" placeholder="Escribe tu respuesta exacta">
+                                </div>
+                            </div>
+                        </fieldset>
+
+                        <div class="alerta-error-musix" th:if="${error}">
+                            <i class="fa-solid fa-circle-exclamation"></i>
+                            <span th:text="${error}"></span>
+                        </div>
+
+                        <div style="display: flex; justify-content: flex-end; margin-top: 10px;">
+                            <button type="submit" class="btn-guardar-perfil">
+                                <i class="fa-solid fa-floppy-disk"></i> Guardar cambios
+                            </button>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    // ==========================================
+    // PREVISUALIZAR FOTO AL SELECCIONARLA
+    // ==========================================
+    function previsualizarFoto(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('avatarPreview').src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+            document.getElementById('nombreArchivoFoto').innerText = 'Archivo: ' + file.name;
+        }
+    }
+
+    // ==========================================
+    // PREGUNTAS DE SEGURIDAD SIN REPETIR
+    // ==========================================
+    document.addEventListener('DOMContentLoaded', () => {
+        const selects = [
+            document.getElementById('pregunta1'),
+            document.getElementById('pregunta2'),
+            document.getElementById('pregunta3')
+        ];
+
+        // Guardar TODAS las opciones originales (menos la vacía)
+        const opcionesOriginales = [];
+        selects[0].querySelectorAll('option').forEach(opt => {
+            if (opt.value !== '') {
+                opcionesOriginales.push({ value: opt.value, text: opt.textContent });
+            }
+        });
+
+        // Función que reconstruye las opciones de cada select
+        function actualizarOpciones() {
+            const valoresSeleccionados = selects.map(s => s.value);
+
+            selects.forEach((select, idx) => {
+                const valorActual = select.value;
+
+                // Limpiar todas las opciones excepto la vacía
+                select.innerHTML = '<option value="">-- Elige una pregunta --</option>';
+
+                // Reconstruir las opciones
+                opcionesOriginales.forEach(op => {
+                    // Mostrar la opción si:
+                    // 1. Es la opción seleccionada actualmente en este select, O
+                    // 2. No está seleccionada en NINGÚN otro select
+                    const seleccionadaEnOtro = valoresSeleccionados.some((v, i) => i !== idx && v === op.value);
+                    if (op.value === valorActual || !seleccionadaEnOtro) {
+                        const nueva = document.createElement('option');
+                        nueva.value = op.value;
+                        nueva.textContent = op.text;
+                        if (op.value === valorActual) nueva.selected = true;
+                        select.appendChild(nueva);
+                    }
+                });
+            });
+        }
+
+        // Escuchar cambios en los 3 selects
+        selects.forEach(s => s.addEventListener('change', actualizarOpciones));
+    });
+</script>
+
+</body>
+</html>

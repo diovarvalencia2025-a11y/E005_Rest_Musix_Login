@@ -1,0 +1,96 @@
+.contenedor {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: auto;
+    gap: 10px 10px;
+    grid-auto-flow: row;
+    grid-template-areas:
+        ". . .";
+}
+
+.producto {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    grid-template-rows: 50px auto auto auto auto;
+    gap: 0px 0px;
+    grid-auto-flow: row;
+    grid-template-areas:
+        "nombre_producto alergenos_producto"
+        "foto_producto foto_producto"
+        "controles_producto controles_producto"
+        "botonera_producto botonera_producto"
+        "precio_producto precio_producto";
+
+    background-color: var(--colorPrincipalClaro);
+    padding: var(--paddingGeneral);
+}
+
+.nombre_producto {
+    grid-area: nombre_producto;
+    font-size: 24px;
+    font-weight: bolder;
+    
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-end;
+}
+
+.alergenos_producto {
+    grid-area: alergenos_producto;
+    text-align: right;
+}
+
+.foto_producto {
+    grid-area: foto_producto;
+}
+
+.controles_producto {
+    grid-area: controles_producto;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.botonera_producto {
+    grid-area: botonera_producto;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 5px 0;
+}
+
+.precio_producto {
+    grid-area: precio_producto;
+    text-align: end;
+    font-size: 20px;
+    font-weight: bolder;
+}
+
+
+.controles_producto button{
+    width: 32px;
+    height: 32px;
+    font-size: 24px;
+    font-weight: bolder;
+}
+
+.controles_producto input{
+    width: 100%;
+    height: 28px;
+    font-size: 24px;
+    font-weight: bolder;
+    margin:0 5px;
+}
+
+.botonera_producto input{
+    width: 48%;
+    height: 28px;
+    font-size: 20px;
+    font-weight: bolder;
+}

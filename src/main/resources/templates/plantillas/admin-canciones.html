@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canciones Admin &bull; MUSIX</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/styles/styles.css}">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background-color: #f1f5f9;
+            color: #0f172a;
+            min-height: 100vh;
+        }
+
+        .app-contenedor {
+            display: flex;
+            min-height: 100vh;
+            width: 100%;
+        }
+
+        /* 1. SIDEBAR */
+        .sidebar {
+            width: 230px;
+            background: #ffffff;
+            border-right: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 24px 16px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            z-index: 100;
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 4px 10px;
+            margin-bottom: 28px;
+        }
+
+        .sidebar-logo .logo-icono {
+            width: 34px;
+            height: 34px;
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            color: #ffffff;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            font-weight: 800;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+
+        .sidebar-logo .logo-texto {
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            color: #0f172a;
+        }
+
+        .sidebar-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 14px;
+            border-radius: 12px;
+            color: #64748b;
+            font-size: 13.5px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .menu-item i {
+            font-size: 15px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .menu-item:hover {
+            background: #f8fafc;
+            color: #0f172a;
+        }
+
+        .menu-item.activo {
+            background: #2563eb;
+            color: #ffffff;
+            font-weight: 700;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+        }
+
+        .sidebar-usuario {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 6px 0 6px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .sidebar-usuario .avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #e2e8f0;
+        }
+
+        .sidebar-user-info {
+            flex: 1;
+        }
+
+        .sidebar-user-info .nombre {
+            font-size: 13px;
+            font-weight: 800;
+            color: #0f172a;
+        }
+
+        .sidebar-user-info .rol-texto {
+            font-size: 11.5px;
+            color: #2563eb;
+            font-weight: 600;
+        }
+
+        .btn-logout-sidebar {
+            color: #94a3b8;
+            font-size: 14px;
+            text-decoration: none;
+            padding: 4px;
+            transition: color 0.2s;
+        }
+
+        .btn-logout-sidebar:hover {
+            color: #dc2626;
+        }
+
+        /* 2. MAIN ÁREA */
+        .main {
+            flex: 1;
+            margin-left: 230px;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background-color: #f1f5f9;
+        }
+
+        .contenido {
+            padding: 32px 40px;
+            flex: 1;
+        }
+
+        /* HEADER */
+        .header-seccion-admin {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+        }
+
+        .header-titulo-box {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .header-icono-circulo {
+            width: 44px;
+            height: 44px;
+            background: #eff6ff;
+            color: #2563eb;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .header-seccion-admin h1 {
+            font-size: 24px;
+            font-weight: 800;
+            color: #0f172a;
+            letter-spacing: -0.5px;
+        }
+
+        .header-seccion-admin p {
+            font-size: 13.5px;
+            color: #64748b;
+            margin-top: 2px;
+        }
+
+        /* 3. GRID DE KPIS */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            margin-bottom: 24px;
+        }
+
+        .kpi-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 20px 22px;
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.02);
+            transition: transform 0.2s ease;
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .kpi-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .kpi-card-header .kpi-label {
+            font-size: 13px;
+            font-weight: 700;
+            color: #64748b;
+        }
+
+        .kpi-icono {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+        }
+
+        .kpi-icono.blue { background: #eff6ff; color: #2563eb; }
+        .kpi-icono.red { background: #fef2f2; color: #ef4444; }
+        .kpi-icono.green { background: #ecfdf5; color: #10b981; }
+        .kpi-icono.purple { background: #f5f3ff; color: #8b5cf6; }
+
+        .kpi-numero {
+            font-size: 28px;
+            font-weight: 800;
+            color: #0f172a;
+            letter-spacing: -0.5px;
+            line-height: 1;
+            margin-bottom: 10px;
+        }
+
+        .kpi-trend {
+            font-size: 11.5px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .kpi-trend.up { color: #10b981; }
+        .kpi-trend.down { color: #ef4444; }
+        .kpi-trend.neutral { color: #94a3b8; }
+
+        .kpi-trend span.sub {
+            color: #94a3b8;
+            font-weight: 500;
+            margin-left: 2px;
+        }
+
+        /* 4. TOOLBAR DE FILTROS */
+        .toolbar-filtros-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 12px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 6px rgba(15, 23, 42, 0.02);
+        }
+
+        .buscador-wrap {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+        }
+
+        .buscador-wrap i {
+            color: #94a3b8;
+            font-size: 15px;
+        }
+
+        .buscador-wrap input {
+            border: none;
+            outline: none;
+            width: 100%;
+            font-size: 13.5px;
+            color: #0f172a;
+            background: transparent;
+        }
+
+        .filtros-derecha-wrap {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .select-filtro-custom {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 8px 14px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #475569;
+        }
+
+        .select-filtro-custom select {
+            border: none;
+            background: transparent;
+            outline: none;
+            font-size: 13px;
+            font-weight: 600;
+            color: #475569;
+            cursor: pointer;
+        }
+
+        /* 5. TABLA DE CANCIONES */
+        .tabla-contenedor-card {
+            background: #ffffff;
+            border-radius: 16px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 14px rgba(15, 23, 42, 0.03);
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .tabla-admin-canciones {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        .tabla-admin-canciones thead th {
+            background: #ffffff;
+            padding: 14px 24px;
+            font-size: 12.5px;
+            font-weight: 700;
+            color: #64748b;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .tabla-admin-canciones tbody td {
+            padding: 16px 24px;
+            font-size: 13.5px;
+            color: #0f172a;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: middle;
+        }
+
+        .tabla-admin-canciones tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .col-cancion-wrap {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .thumb-cover-container {
+            position: relative;
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            overflow: hidden;
+            flex-shrink: 0;
+            box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08);
+            border: 1px solid #e2e8f0;
+            cursor: pointer;
+        }
+
+        .thumb-miniatura-cancion {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            background: #e2e8f0;
+        }
+
+        .hover-play-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.45);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 14px;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .thumb-cover-container:hover .hover-play-overlay {
+            opacity: 1;
+        }
+
+        .avatar-user-table {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1.5px solid #e2e8f0;
+        }
+
+        .cancion-tit-p {
+            font-weight: 700;
+            color: #0f172a;
+            font-size: 13.5px;
+        }
+
+        .cancion-desc-sub {
+            font-size: 12px;
+            color: #94a3b8;
+            margin-top: 1px;
+            max-width: 260px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .badge-estilo-pill {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 8px;
+            background: #f1f5f9;
+            color: #475569;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .badge-rep-si {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 12px;
+            background: #fef2f2;
+            color: #ef4444;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .badge-rep-si::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #ef4444;
+        }
+
+        .badge-rep-no {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 12px;
+            background: #ecfdf5;
+            color: #10b981;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .badge-rep-no::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #10b981;
+        }
+
+        .btn-pill-ver-yt {
+            padding: 6px 12px;
+            background: #ffffff;
+            border: 1px solid #93c5fd;
+            color: #2563eb;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.2s;
+        }
+
+        .btn-pill-ver-yt:hover {
+            background: #eff6ff;
+        }
+
+        .btn-pill-borrar-c {
+            padding: 6px 12px;
+            background: #ffffff;
+            border: 1px solid #fca5a5;
+            color: #ef4444;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.2s;
+        }
+
+        .btn-pill-borrar-c:hover {
+            background: #fef2f2;
+        }
+
+        .btn-pill-desbanear-c {
+            padding: 6px 12px;
+            background: #ffffff;
+            border: 1px solid #bbf7d0;
+            color: #16a34a;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.2s;
+        }
+
+        .btn-pill-desbanear-c:hover {
+            background: #f0fdf4;
+            border-color: #16a34a;
+        }
+
+        /* 6. PAGINACIÓN */
+        .paginacion-footer-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 4px 8px;
+        }
+
+        .paginacion-info-txt {
+            font-size: 13px;
+            color: #64748b;
+            font-weight: 600;
+        }
+
+        .paginacion-controles {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-pagina-num {
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 700;
+            color: #64748b;
+            text-decoration: none;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s;
+        }
+
+        .btn-pagina-num:hover {
+            background: #f8fafc;
+            color: #0f172a;
+        }
+
+        .btn-pagina-num.activo {
+            background: #2563eb;
+            color: #ffffff;
+            border-color: #2563eb;
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+        }
+
+        .btn-pagina-nav {
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #64748b;
+            text-decoration: none;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s;
+        }
+
+        .btn-pagina-nav:hover {
+            background: #f8fafc;
+            color: #0f172a;
+        }
+
+        @media (max-width: 1100px) {
+            .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 900px) {
+            .sidebar { display: none; }
+            .main { margin-left: 0; }
+            .contenido { padding: 16px; }
+            .kpi-grid { grid-template-columns: 1fr; }
+            .toolbar-filtros-card { flex-direction: column; align-items: stretch; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-contenedor">
+
+    <!-- ─────────── 1. SIDEBAR DE NAVEGACIÓN ─────────── -->
+    <aside class="sidebar">
+        <div>
+            <div class="sidebar-logo">
+                <div class="logo-icono"><i class="fa-solid fa-play"></i></div>
+                <div class="logo-texto">MUSIX</div>
+            </div>
+
+            <nav class="sidebar-menu">
+                <a th:href="@{/canciones}" class="menu-item">
+                    <i class="fa-solid fa-music"></i>
+                    <span>Canciones</span>
+                </a>
+                <a th:href="@{/perfil}" class="menu-item">
+                    <i class="fa-regular fa-user"></i>
+                    <span>Mi perfil</span>
+                </a>
+
+                <div style="margin-top: 12px; border-top: 1px solid #e2e8f0; padding-top: 12px;">
+                    <p style="font-size: 11px; font-weight: 700; color: #94a3b8; text-transform: uppercase; padding: 0 14px 6px 14px;">Administración</p>
+                    <a th:href="@{/admin/canciones}" class="menu-item activo">
+                        <i class="fa-solid fa-sliders"></i>
+                        <span>Control Canciones</span>
+                    </a>
+                    <a th:href="@{/admin/usuarios}" class="menu-item">
+                        <i class="fa-solid fa-users-gear"></i>
+                        <span>Control Usuarios</span>
+                    </a>
+                </div>
+            </nav>
+        </div>
+
+        <div class="sidebar-usuario">
+            <img th:src="@{'/imagenes/' + ${usuario != null and usuario.foto != null ? usuario.foto : 'Fondologin.png'}}"
+                 alt="Admin"
+                 class="avatar"
+                 onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=Admin&amp;background=2563eb&amp;color=fff';">
+            <div class="sidebar-user-info">
+                <p class="nombre" th:text="${usuario != null ? usuario.user : 'Admin'}">Admin</p>
+                <p class="rol-texto">Administrador</p>
+            </div>
+            <a th:href="@{/logout}" class="btn-logout-sidebar" title="Cerrar sesión">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+            </a>
+        </div>
+    </aside>
+
+    <!-- ─────────── 2. ÁREA PRINCIPAL ─────────── -->
+    <div class="main">
+
+        <div class="contenido">
+
+            <!-- NOTIFICACIONES FLASH -->
+            <div th:if="${f_mensaje}" style="background: #ecfdf5; border: 1px solid #a7f3d0; color: #065f46; padding: 12px 18px; border-radius: 12px; font-size: 13.5px; font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
+                <i class="fa-solid fa-circle-check"></i> <span th:text="${f_mensaje}">Operación exitosa</span>
+            </div>
+            <div th:if="${f_error}" style="background: #fef2f2; border: 1px solid #fecaca; color: #991b1b; padding: 12px 18px; border-radius: 12px; font-size: 13.5px; font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
+                <i class="fa-solid fa-circle-exclamation"></i> <span th:text="${f_error}">Error</span>
+            </div>
+
+            <!-- ENCABEZADO -->
+            <header class="header-seccion-admin">
+                <div class="header-titulo-box">
+                    <div class="header-icono-circulo">
+                        <i class="fa-solid fa-sliders"></i>
+                    </div>
+                    <div>
+                        <h1>Administración de Canciones</h1>
+                        <p>Supervisa el catálogo global de canciones, modera reportes y gestiona contenido infractor.</p>
+                    </div>
+                </div>
+            </header>
+
+            <!-- ─────────── 3. GRID DE 4 KPIS ─────────── -->
+            <section class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-card-header">
+                        <span class="kpi-label">Canciones</span>
+                        <div class="kpi-icono blue"><i class="fa-solid fa-music"></i></div>
+                    </div>
+                    <div class="kpi-numero" th:text="${totalCanciones}">7</div>
+                    <div class="kpi-trend up">
+                        <i class="fa-solid fa-arrow-trend-up"></i> Catálogo Activo
+                    </div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-card-header">
+                        <span class="kpi-label">Reportadas</span>
+                        <div class="kpi-icono red"><i class="fa-solid fa-flag"></i></div>
+                    </div>
+                    <div class="kpi-numero" th:text="${totalReportadas}">2</div>
+                    <div class="kpi-trend down">
+                        <i class="fa-solid fa-triangle-exclamation"></i> Requieren Revisión
+                    </div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-card-header">
+                        <span class="kpi-label">Géneros / Estilos</span>
+                        <div class="kpi-icono purple"><i class="fa-solid fa-compact-disc"></i></div>
+                    </div>
+                    <div class="kpi-numero" th:text="${totalEstilos}">5</div>
+                    <div class="kpi-trend neutral">
+                        <i class="fa-solid fa-layer-group"></i> Categorías
+                    </div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-card-header">
+                        <span class="kpi-label">Artistas / Creadores</span>
+                        <div class="kpi-icono green"><i class="fa-solid fa-users"></i></div>
+                    </div>
+                    <div class="kpi-numero" th:text="${totalArtistas}">5</div>
+                    <div class="kpi-trend up">
+                        <i class="fa-solid fa-user-check"></i> Usuarios activos
+                    </div>
+                </div>
+            </section>
+
+            <!-- ─────────── 4. BARRA DE BÚSQUEDA Y FILTROS ─────────── -->
+            <form th:action="@{/admin/canciones}" method="get" id="formFiltrosCanciones" class="toolbar-filtros-card">
+                <div class="buscador-wrap">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" name="texto" th:value="${fTexto}" placeholder="Buscar por título, artista o estilo..." onkeydown="if(event.key==='Enter') this.form.submit();">
+                </div>
+
+                <div class="filtros-derecha-wrap">
+                    <div class="select-filtro-custom">
+                        <i class="fa-solid fa-headphones" style="color:#94a3b8;"></i>
+                        <select name="estilo" onchange="document.getElementById('formFiltrosCanciones').submit();">
+                            <option value="0" th:selected="${fEstilo == null or fEstilo == 0}">Todos los estilos</option>
+                            <option th:each="est : ${estilos}" 
+                                    th:value="${est.id}" 
+                                    th:text="${est.nombre}"
+                                    th:selected="${fEstilo != null and fEstilo == est.id}">Rock</option>
+                        </select>
+                    </div>
+
+                    <div class="select-filtro-custom">
+                        <i class="fa-regular fa-flag" style="color:#94a3b8;"></i>
+                        <select name="reportada" onchange="document.getElementById('formFiltrosCanciones').submit();">
+                            <option value="" th:selected="${fReportada == null}">Todos los estados</option>
+                            <option value="true" th:selected="${fReportada != null and fReportada == true}">🚩 Solo Reportadas</option>
+                            <option value="false" th:selected="${fReportada != null and fReportada == false}">🟢 Sin Reportes</option>
+                        </select>
+                    </div>
+
+                    <div class="select-filtro-custom">
+                        <i class="fa-regular fa-user" style="color:#94a3b8;"></i>
+                        <select name="usuarioId" onchange="document.getElementById('formFiltrosCanciones').submit();">
+                            <option value="0" th:selected="${fUsuarioId == null or fUsuarioId == 0}">Todos los usuarios</option>
+                            <option th:each="u : ${usuarios}" 
+                                    th:value="${u.id}" 
+                                    th:text="${u.user}"
+                                    th:selected="${fUsuarioId != null and fUsuarioId == u.id}">Usuario</option>
+                        </select>
+                    </div>
+                </div>
+            </form>
+
+            <!-- ─────────── 5. TABLA DE CANCIONES ─────────── -->
+            <div class="tabla-contenedor-card">
+                <table class="tabla-admin-canciones">
+                    <thead>
+                        <tr>
+                            <th>Canción</th>
+                            <th>Artista / Subida por</th>
+                            <th>Género</th>
+                            <th>Duración</th>
+                            <th>Estado</th>
+                            <th style="text-align: right; padding-right: 32px;">Acciones de Moderación</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:if="${#lists.isEmpty(canciones)}">
+                            <td colspan="6" style="text-align: center; color: #94a3b8; padding: 40px;">
+                                <i class="fa-solid fa-music-slash" style="font-size: 28px; margin-bottom: 10px; display: block;"></i>
+                                No se encontraron canciones con los filtros seleccionados.
+                            </td>
+                        </tr>
+
+                        <tr th:each="c : ${canciones}">
+                            <!-- Canción -->
+                            <td>
+                                <div class="col-cancion-wrap">
+                                    <div class="thumb-cover-container" title="Reproducir canción"
+                                         th:onclick="abrirReproductor([[${c.enlace}]], [[${c.titulo}]], [[${c.estilo != null ? c.estilo.nombre : 'Música'}]])">
+                                        <img class="thumb-miniatura-cancion thumb-dinamica"
+                                             th:data-enlace="${c.enlace}"
+                                             th:data-titulo="${c.titulo}"
+                                             src="https://ui-avatars.com/api/?name=M&amp;background=2563eb&amp;color=fff"
+                                             alt="Miniatura">
+                                        <span class="hover-play-overlay">
+                                            <i class="fa-solid fa-play"></i>
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <p class="cancion-tit-p" th:text="${c.titulo}">Bohemian Rhapsody</p>
+                                        <p class="cancion-desc-sub" th:text="${c.descripcion != null ? c.descripcion : 'Sin descripción'}">Clásico de Queen</p>
+                                    </div>
+                                </div>
+                            </td>
+
+                            <!-- Usuario -->
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <img th:src="${c.usuario != null and c.usuario.foto != null and !c.usuario.foto.isEmpty() ? (c.usuario.foto.startsWith('http') ? c.usuario.foto : 'http://localhost:9090/imagenes/' + c.usuario.foto) : 'https://ui-avatars.com/api/?name=' + (c.usuario != null ? c.usuario.user : 'User') + '&background=2563eb&color=fff'}"
+                                         class="avatar-user-table"
+                                         th:alt="${c.usuario != null ? c.usuario.user : 'Anónimo'}"
+                                         th:attr="onerror='this.onerror=null; this.src=\'https://ui-avatars.com/api/?name=' + (${c.usuario != null ? c.usuario.user : 'User'}) + '&background=2563eb&color=fff\';'">
+                                    <span style="font-weight: 700; color: #0f172a;" th:text="${c.usuario != null ? c.usuario.user : 'Anónimo'}">carlos</span>
+                                </div>
+                            </td>
+
+                            <!-- Género -->
+                            <td>
+                                <span class="badge-estilo-pill" th:text="${c.estilo != null ? c.estilo.nombre : 'General'}">Rock</span>
+                            </td>
+
+                            <!-- Duración -->
+                            <td style="color: #64748b; font-size: 13px; font-weight: 600;" 
+                                th:text="${(c.duracion / 60) + ':' + (c.duracion % 60 < 10 ? '0' : '') + (c.duracion % 60)}">3:54</td>
+
+                            <!-- Estado / Reporte -->
+                            <td>
+                                <span th:if="${c.reportada}" class="badge-rep-si">🚩 Reportada</span>
+                                <span th:unless="${c.reportada}" class="badge-rep-no">Normal</span>
+                            </td>
+
+                            <!-- Acciones -->
+                            <td style="text-align: right;">
+                                <div style="display: flex; align-items: center; justify-content: flex-end; gap: 8px;">
+                                    <!-- Escuchar con reproductor integrado -->
+                                    <button type="button" class="btn-pill-ver-yt" style="cursor: pointer; border: none;"
+                                            th:onclick="abrirReproductor([[${c.enlace}]], [[${c.titulo}]], [[${c.estilo != null ? c.estilo.nombre : 'Música'}]])" 
+                                            title="Reproducir canción en pantalla">
+                                        <i class="fa-solid fa-play"></i> Escuchar
+                                    </button>
+
+                                    <!-- Borrar Canción -->
+                                    <form th:action="@{'/admin/canciones/borrar/' + ${c.id}}" method="post" style="margin: 0;">
+                                        <button type="submit" class="btn-pill-borrar-c" onclick="return confirm('¿Eliminar esta canción del catálogo?')">
+                                            <i class="fa-solid fa-trash-can"></i> Borrar
+                                        </button>
+                                    </form>
+
+                                    <!-- 🚫 BANEAR CANCIÓN (solo si NO está reportada) -->
+                                    <form th:if="${!c.reportada}"
+                                          th:action="@{'/admin/canciones/banear/' + ${c.id}}"
+                                          method="post"
+                                          style="margin: 0;">
+                                        <button type="submit" class="btn-pill-borrar-c"
+                                                style="border-color: #ef4444; background: #fee2e2; color: #b91c1c;"
+                                                onclick="return confirm('¿Banear esta canción del catálogo?')">
+                                            <i class="fa-solid fa-music"></i> Banear Canción
+                                        </button>
+                                    </form>
+
+                                    <!-- Desbanear cancion -->
+                                    <form th:if="${c.reportada}"
+                                          th:action="@{'/admin/canciones/aprobar/' + ${c.id}}"
+                                          method="post"
+                                          style="margin: 0;">
+                                        <button type="submit" class="btn-pill-desbanear-c"
+                                                onclick="return confirm('¿Desbanear esta canción y devolverla al catálogo?')">
+                                            <i class="fa-solid fa-circle-check"></i> Desbanear Canción
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- ─────────── 6. PAGINACIÓN INFERIOR ─────────── -->
+            <div class="paginacion-footer-wrap">
+                <div class="paginacion-info-txt">
+                    Mostrando <span th:text="${mostrandoDesde}">1</span> - <span th:text="${mostrandoHasta}">6</span> de <span th:text="${totalItems}">7</span> canciones
+                </div>
+
+                <div class="paginacion-controles" th:if="${totalPaginas > 1}">
+                    <a th:if="${paginaActual > 1}" 
+                       th:href="@{/admin/canciones(page=${paginaActual - 1}, texto=${fTexto}, estilo=${fEstilo}, reportada=${fReportada}, usuarioId=${fUsuarioId})}" 
+                       class="btn-pagina-nav">
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </a>
+
+                    <th:block th:each="p : ${#numbers.sequence(1, totalPaginas)}">
+                        <a th:href="@{/admin/canciones(page=${p}, texto=${fTexto}, estilo=${fEstilo}, reportada=${fReportada}, usuarioId=${fUsuarioId})}" 
+                           th:text="${p}" 
+                           th:class="'btn-pagina-num ' + (${p == paginaActual} ? 'activo' : '')">1</a>
+                    </th:block>
+
+                    <a th:if="${paginaActual < totalPaginas}" 
+                       th:href="@{/admin/canciones(page=${paginaActual + 1}, texto=${fTexto}, estilo=${fEstilo}, reportada=${fReportada}, usuarioId=${fUsuarioId})}" 
+                       class="btn-pagina-nav">
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    // ==========================================
+    // REPRODUCTOR INTEGRADO MUSIX EN PANTALLA
+    // ==========================================
+    let isPlaying = true;
+
+    function extraerYouTubeId(url) {
+        if (!url) return '';
+        const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+        const match = url.match(regExp);
+        return (match && match[2].length === 11) ? match[2] : url;
+    }
+
+    function abrirReproductor(enlace, titulo, estilo) {
+        const modal = document.getElementById('modalReproductor');
+        document.getElementById('reproductorTitulo').innerText = titulo || 'Reproduciendo';
+        document.getElementById('reproductorEstilo').innerText = estilo || 'Música';
+
+        const videoId = extraerYouTubeId(enlace);
+        const container = document.getElementById('iframeContainer');
+        container.innerHTML = `<iframe id="ytPlayerFrame" 
+            src="https://www.youtube.com/embed/${videoId}?enablejsapi=1&autoplay=1" 
+            frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+            allowfullscreen style="width:100%; height:100%; border-radius:12px;"></iframe>`;
+
+        modal.style.display = 'flex';
+        isPlaying = true;
+        actualizarBotonPlay();
+    }
+
+    function cerrarReproductor() {
+        const modal = document.getElementById('modalReproductor');
+        modal.style.display = 'none';
+        const container = document.getElementById('iframeContainer');
+        container.innerHTML = '';
+    }
+
+    function enviarComandoYT(func, args) {
+        const iframe = document.getElementById('ytPlayerFrame');
+        if (iframe && iframe.contentWindow) {
+            iframe.contentWindow.postMessage(JSON.stringify({
+                event: 'command',
+                func: func,
+                args: args || []
+            }), '*');
+        }
+    }
+
+    function togglePlayPausa() {
+        if (isPlaying) {
+            enviarComandoYT('pauseVideo');
+            isPlaying = false;
+        } else {
+            enviarComandoYT('playVideo');
+            isPlaying = true;
+        }
+        actualizarBotonPlay();
+    }
+
+    function actualizarBotonPlay() {
+        const btn = document.getElementById('btnPlayPausa');
+        if (btn) {
+            btn.innerHTML = isPlaying ? '<i class="fa-solid fa-pause"></i>' : '<i class="fa-solid fa-play"></i>';
+        }
+    }
+
+    function retroceder10() {
+        enviarComandoYT('seekTo', [-10, false]);
+    }
+
+    function avanzar10() {
+        enviarComandoYT('seekTo', [10, false]);
+    }
+
+    function cambiarVolumen(val) {
+        enviarComandoYT('setVolume', [parseInt(val)]);
+        document.getElementById('volumenValor').innerText = val + '%';
+    }
+
+    // ==========================================
+    // CARGAR MINIATURAS DE YOUTUBE DINÁMICAS
+    // ==========================================
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.thumb-dinamica').forEach(img => {
+            const enlace = img.dataset.enlace || '';
+            const titulo = img.dataset.titulo || 'M';
+            const videoId = extraerYouTubeId(enlace);
+
+            if (videoId) {
+                img.src = `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`;
+                img.onerror = () => {
+                    img.onerror = null;
+                    img.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(titulo)}&background=2563eb&color=fff`;
+                };
+            } else {
+                img.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(titulo)}&background=2563eb&color=fff`;
+            }
+        });
+    });
+</script>
+
+<!-- MODAL REPRODUCTOR EN PANTALLA -->
+<div id="modalReproductor" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15, 23, 42, 0.85); backdrop-filter:blur(6px); z-index:9999; align-items:center; justify-content:center; padding:20px;">
+    <div style="background:#ffffff; width:100%; max-width:850px; border-radius:20px; overflow:hidden; box-shadow:0 25px 50px -12px rgba(0,0,0,0.5); display:flex; flex-direction:column;">
+        
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:16px 24px; background:#0f172a; color:#fff;">
+            <div>
+                <span id="reproductorEstilo" style="font-size:11px; font-weight:700; background:#2563eb; padding:3px 10px; border-radius:20px; text-transform:uppercase;">ROCK</span>
+                <h3 id="reproductorTitulo" style="margin-top:6px; font-size:17px; font-weight:700; color:#fff;">Título de la canción</h3>
+            </div>
+            <button type="button" onclick="cerrarReproductor()" style="background:rgba(255,255,255,0.15); border:none; color:#fff; width:36px; height:36px; border-radius:50%; cursor:pointer; font-size:16px; display:flex; align-items:center; justify-content:center;">✕</button>
+        </div>
+
+        <div id="iframeContainer" style="width:100%; height:420px; background:#000; display:flex; align-items:center; justify-content:center;"></div>
+
+        <div style="display:flex; align-items:center; justify-content:space-between; padding:16px 24px; background:#f8fafc; border-top:1px solid #e2e8f0; flex-wrap:wrap; gap:16px;">
+            <div style="display:flex; align-items:center; gap:12px;">
+                <button type="button" onclick="retroceder10()" title="Retroceder 10 seg" style="background:#e2e8f0; border:none; width:40px; height:40px; border-radius:50%; font-size:14px; cursor:pointer; color:#1e293b; display:flex; align-items:center; justify-content:center;">
+                    <i class="fa-solid fa-rotate-left"></i>
+                </button>
+
+                <button id="btnPlayPausa" type="button" onclick="togglePlayPausa()" title="Pausar / Reproducir" style="background:#2563eb; border:none; width:48px; height:48px; border-radius:50%; font-size:18px; cursor:pointer; color:#fff; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 12px rgba(37,99,235,0.35);">
+                    <i class="fa-solid fa-pause"></i>
+                </button>
+
+                <button type="button" onclick="avanzar10()" title="Avanzar 10 seg" style="background:#e2e8f0; border:none; width:40px; height:40px; border-radius:50%; font-size:14px; cursor:pointer; color:#1e293b; display:flex; align-items:center; justify-content:center;">
+                    <i class="fa-solid fa-rotate-right"></i>
+                </button>
+            </div>
+
+            <div style="display:flex; align-items:center; gap:10px;">
+                <i class="fa-solid fa-volume-high" style="color:#64748b; font-size:15px;"></i>
+                <input type="range" id="volumenSlider" min="0" max="100" value="80" oninput="cambiarVolumen(this.value)" style="cursor:pointer; accent-color:#2563eb; width:120px;">
+                <span id="volumenValor" style="font-size:12px; font-weight:700; color:#475569; width:35px;">80%</span>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>

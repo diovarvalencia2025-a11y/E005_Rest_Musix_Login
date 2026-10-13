@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recuperar contraseña - MUSIX</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/styles/loginStyles.css}">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; }
+        body { min-height: 100vh; background: #e6f1fb; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .card-box { width: 100%; max-width: 520px; background: #ffffff; border-radius: 20px; padding: 40px; box-shadow: 0 20px 40px rgba(15, 23, 42, 0.1); border: 1px solid #e2e8f0; }
+        .marca { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+        .logo-icono { width: 36px; height: 36px; background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: #fff; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 18px; }
+        .logo-txt { font-size: 22px; font-weight: 800; color: #0f172a; }
+        h2 { font-size: 24px; font-weight: 800; color: #0f172a; margin-bottom: 6px; }
+        p.sub { font-size: 13.5px; color: #64748b; margin-bottom: 24px; line-height: 1.5; }
+        .campo { margin-bottom: 16px; }
+        .campo label { display: block; font-size: 13px; font-weight: 700; color: #334155; margin-bottom: 6px; }
+        .campo input { width: 100%; padding: 12px 14px; border: 1.5px solid #cbd5e1; border-radius: 10px; font-size: 14px; outline: none; }
+        .campo input:focus { border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.12); }
+        .btn-row { display: flex; gap: 12px; margin-top: 24px; }
+        .btn-primario { flex: 1; padding: 12px; background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); color: #fff; font-size: 14px; font-weight: 700; border: none; border-radius: 10px; cursor: pointer; }
+        .btn-secundario { padding: 12px 20px; background: #f1f5f9; color: #475569; font-size: 14px; font-weight: 700; border: none; border-radius: 10px; cursor: pointer; text-decoration: none; text-align: center; }
+        .msg-error { background: #fef2f2; border: 1px solid #fecaca; color: #b91c1c; padding: 10px 14px; border-radius: 8px; font-size: 13px; font-weight: 600; margin-bottom: 18px; }
+    </style>
+</head>
+<body>
+
+<div class="card-box">
+    <div class="marca">
+        <span class="logo-icono">♪</span>
+        <span class="logo-txt">MUSIX</span>
+    </div>
+
+    <h2>Recuperar contraseña</h2>
+    <p class="sub">Introduce tu usuario y las respuestas a tus preguntas de seguridad.</p>
+
+    <article th:if="${f_mensaje}" id="cajaMensajes" class="msg-error">
+        <h2 th:text="${f_mensaje}" style="font-size: 14px; font-weight: 700; margin: 0;"></h2>
+    </article>
+
+    <form method="post" th:action="@{/RestaurarPassFrm}">
+        <div class="campo">
+            <label for="user">Nombre de usuario</label>
+            <input type="text" id="user" name="user" placeholder="Tu usuario" required autocomplete="username">
+        </div>
+
+        <div class="campo">
+            <label for="respuesta1">Respuesta 1</label>
+            <input type="text" id="respuesta1" name="respuesta1" placeholder="Respuesta a tu 1ª pregunta" required>
+        </div>
+
+        <div class="campo">
+            <label for="respuesta2">Respuesta 2</label>
+            <input type="text" id="respuesta2" name="respuesta2" placeholder="Respuesta a tu 2ª pregunta">
+        </div>
+
+        <div class="campo">
+            <label for="respuesta3">Respuesta 3</label>
+            <input type="text" id="respuesta3" name="respuesta3" placeholder="Respuesta a tu 3ª pregunta">
+        </div>
+
+        <div class="btn-row">
+            <button type="submit" class="btn-secundario" th:formaction="@{/CancelarRecuperarPass}" formnovalidate>Cancelar</button>
+            <button type="submit" class="btn-primario" th:formaction="@{/RestaurarPassFrm}">Restaurar</button>
+        </div>
+    </form>
+</div>
+
+</body>
+</html>
