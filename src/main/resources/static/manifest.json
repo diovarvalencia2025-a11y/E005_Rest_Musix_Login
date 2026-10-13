@@ -1,0 +1,23 @@
+﻿{
+  "name": "Rex Musix",
+  "short_name": "Musix",
+  "description": "Tu música en comunidad. Comparte y descubre canciones.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2563eb",
+  "icons": [
+    {
+      "src": "/Imagenes/logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/Imagenes/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
