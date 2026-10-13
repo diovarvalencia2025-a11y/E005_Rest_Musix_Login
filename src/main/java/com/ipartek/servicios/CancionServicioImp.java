@@ -95,9 +95,15 @@ public class CancionServicioImp implements CancionServicio {
 	@Override
 	public Cancion insertar(Cancion cancion) {
 		try {
-			return restTemplate.postForObject(getBaseUrl() + "/", cancion, Cancion.class);
+			return restTemplate.postForObject(getBaseUrl(), cancion, Cancion.class);
 		} catch (Exception e) {
-			return null;
+			System.err.println("Error al insertar cancion en " + getBaseUrl() + ": " + e.getMessage());
+			try {
+				return restTemplate.postForObject(getBaseUrl() + "/", cancion, Cancion.class);
+			} catch (Exception ex) {
+				System.err.println("Error secundario al insertar cancion: " + ex.getMessage());
+				return null;
+			}
 		}
 	}
 
