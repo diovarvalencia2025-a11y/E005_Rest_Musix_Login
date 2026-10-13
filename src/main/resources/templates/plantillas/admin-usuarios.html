@@ -954,7 +954,7 @@
                             <!-- Columna Usuario -->
                             <td>
                                 <div class="col-usuario-info">
-                                    <img th:src="${u.foto != null and !u.foto.isEmpty() ? (u.foto.startsWith('http') ? u.foto : 'http://localhost:9090/imagenes/' + u.foto) : 'https://ui-avatars.com/api/?name=' + (u.user != null ? u.user : 'User') + '&background=2563eb&color=fff'}"
+                                    <img th:src="${u.foto != null and !u.foto.isEmpty() ? (u.foto.startsWith('http') ? u.foto : 'https://e005-rest-musix-api.onrender.com/imagenes/' + u.foto) : 'https://ui-avatars.com/api/?name=' + (u.user != null ? u.user : 'User') + '&background=2563eb&color=fff'}"
                                          th:alt="${u.user}"
                                          class="avatar-user-table"
                                          th:attr="onerror='this.onerror=null; this.src=\'https://ui-avatars.com/api/?name=' + (${u.user != null ? u.user : 'User'}) + '&background=2563eb&color=fff\';'">

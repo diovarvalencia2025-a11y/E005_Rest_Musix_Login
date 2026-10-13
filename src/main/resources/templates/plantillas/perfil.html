@@ -544,7 +544,7 @@
             <div class="topbar-der">
                 <button class="btn-campana-top" title="Notificaciones"><i class="fa-regular fa-bell"></i></button>
                 <img th:if="${usuario != null and usuario.foto != null and !usuario.foto.isEmpty()}"
-                     th:src="${usuario.foto.startsWith('http') ? usuario.foto : 'http://localhost:9090/imagenes/' + usuario.foto}"
+                     th:src="${usuario.foto.startsWith('http') ? usuario.foto : 'https://e005-rest-musix-api.onrender.com/imagenes/' + usuario.foto}"
                      th:alt="${usuario != null ? usuario.user : 'U'}"
                      alt="Avatar"
                      class="avatar-topbar-user"
@@ -576,7 +576,7 @@
                         <div class="avatar-perfil-wrap">
                             <img id="avatarPreview"
                                  th:src="${usuario != null and usuario.foto != null and !usuario.foto.isEmpty()
-                                          ? (usuario.foto.startsWith('http') ? usuario.foto : 'http://localhost:9090/imagenes/' + usuario.foto)
+                                          ? (usuario.foto.startsWith('http') ? usuario.foto : 'https://e005-rest-musix-api.onrender.com/imagenes/' + usuario.foto)
                                           : 'https://ui-avatars.com/api/?name=' + (usuario != null ? usuario.user : 'David') + '&amp;background=2563eb&amp;color=fff'}"
                                  th:alt="${usuario != null ? usuario.user : 'David'}"
                                  alt="Avatar"

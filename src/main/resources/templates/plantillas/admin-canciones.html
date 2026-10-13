@@ -854,7 +854,7 @@
                             <!-- Usuario -->
                             <td>
                                 <div style="display: flex; align-items: center; gap: 8px;">
-                                    <img th:src="${c.usuario != null and c.usuario.foto != null and !c.usuario.foto.isEmpty() ? (c.usuario.foto.startsWith('http') ? c.usuario.foto : 'http://localhost:9090/imagenes/' + c.usuario.foto) : 'https://ui-avatars.com/api/?name=' + (c.usuario != null ? c.usuario.user : 'User') + '&background=2563eb&color=fff'}"
+                                    <img th:src="${c.usuario != null and c.usuario.foto != null and !c.usuario.foto.isEmpty() ? (c.usuario.foto.startsWith('http') ? c.usuario.foto : 'https://e005-rest-musix-api.onrender.com/imagenes/' + c.usuario.foto) : 'https://ui-avatars.com/api/?name=' + (c.usuario != null ? c.usuario.user : 'User') + '&background=2563eb&color=fff'}"
                                          class="avatar-user-table"
                                          th:alt="${c.usuario != null ? c.usuario.user : 'Anónimo'}"
                                          th:attr="onerror='this.onerror=null; this.src=\'https://ui-avatars.com/api/?name=' + (${c.usuario != null ? c.usuario.user : 'User'}) + '&background=2563eb&color=fff\';'">

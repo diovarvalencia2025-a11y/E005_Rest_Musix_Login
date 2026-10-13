@@ -653,7 +653,7 @@
         <div class="sidebar-usuario">
             <!-- Con foto -->
             <img th:if="${usuario != null and usuario.foto != null and !usuario.foto.isEmpty()}"
-                 th:src="${usuario.foto.startsWith('http') ? usuario.foto : 'http://localhost:9090/imagenes/' + usuario.foto}"
+                 th:src="${usuario.foto.startsWith('http') ? usuario.foto : 'https://e005-rest-musix-api.onrender.com/imagenes/' + usuario.foto}"
                  alt="Avatar"
                  class="avatar"
                  onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=User&amp;background=2563eb&amp;color=fff';">

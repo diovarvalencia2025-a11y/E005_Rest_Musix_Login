@@ -1015,7 +1015,7 @@
                             <img class="autor-avatar-img"
                                  style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover;"
                                  th:if="${c.usuario != null and c.usuario.foto != null}"
-                                 th:src="${c.usuario.foto.startsWith('http') ? c.usuario.foto : 'http://localhost:9090/imagenes/' + c.usuario.foto}"
+                                 th:src="${c.usuario.foto.startsWith('http') ? c.usuario.foto : 'https://e005-rest-musix-api.onrender.com/imagenes/' + c.usuario.foto}"
                                  th:attr="onerror='this.src=\'/Imagenes/' + (${c.usuario.foto != null ? c.usuario.foto : 'logo.png'}) + '\'; this.onerror=function(){this.src=\'https://ui-avatars.com/api/?name=' + (${c.usuario != null ? c.usuario.user : 'U'}) + '&background=2563eb&color=fff\';}'"
                                  alt="Avatar">
                             <div class="autor-avatar-badge" 
